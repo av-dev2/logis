@@ -44,7 +44,12 @@ app_license = "mit"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+
+doctype_list_js = {
+    "Custom Field": "logis/patches/custom_fields/custom_field.js",
+    "Property Setter": "logis/patches/propert_setters/property_setter.js",
+}
+
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -81,6 +86,11 @@ app_license = "mit"
 
 # Installation
 # ------------
+
+after_migrate = [
+    "logis.patches.custom_fields.create_custom_fields.execute",
+    "logis.patches.property_setters.create_property_setters.execute",
+]
 
 # before_install = "logis.install.before_install"
 # after_install = "logis.install.after_install"
