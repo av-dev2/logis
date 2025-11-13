@@ -1,0 +1,201 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-11 21:26:04.644470",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_671p",
+  "truck",
+  "trailer",
+  "amended_from",
+  "column_break_vzgq",
+  "driver",
+  "license_no",
+  "track_trailer",
+  "column_break_zijj",
+  "company",
+  "posting_date",
+  "fuel_detail_section",
+  "previous_issued_fuel",
+  "previous_fuel",
+  "column_break_baup",
+  "expected_trips",
+  "requested_fuel",
+  "column_break_psva",
+  "fuel_per_trip",
+  "total_fuel",
+  "expenses_section",
+  "expenses",
+  "total_expense"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_671p",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Trip Assignmant",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "truck",
+   "fieldtype": "Link",
+   "label": "Truck",
+   "options": "Vehicle",
+   "search_index": 1
+  },
+  {
+   "fieldname": "trailer",
+   "fieldtype": "Link",
+   "label": "Trailer",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "column_break_vzgq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Driver",
+   "options": "Driver"
+  },
+  {
+   "fieldname": "license_no",
+   "fieldtype": "Data",
+   "label": "License No"
+  },
+  {
+   "fieldname": "column_break_zijj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "track_trailer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Track/Trailer"
+  },
+  {
+   "fieldname": "fuel_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Trip & Fuel Detail"
+  },
+  {
+   "description": "Fuel remained from last trip",
+   "fieldname": "previous_fuel",
+   "fieldtype": "Float",
+   "label": "Previous Used Fuel",
+   "read_only": 1
+  },
+  {
+   "description": "Total Fuel issued from last trip",
+   "fieldname": "previous_issued_fuel",
+   "fieldtype": "Float",
+   "label": "Previous Issued Fuel",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_baup",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "5",
+   "description": "No of expected trips",
+   "fieldname": "expected_trips",
+   "fieldtype": "Int",
+   "label": "Expected Trips"
+  },
+  {
+   "default": "20",
+   "fieldname": "fuel_per_trip",
+   "fieldtype": "Float",
+   "label": "Fuel Per each Trip"
+  },
+  {
+   "fieldname": "column_break_psva",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "requested_fuel",
+   "fieldtype": "Float",
+   "label": "Requested Fuel",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_fuel",
+   "fieldtype": "Float",
+   "label": "Total Fuel",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expenses_section",
+   "fieldtype": "Section Break",
+   "label": "Expenses"
+  },
+  {
+   "fieldname": "expenses",
+   "fieldtype": "Table",
+   "label": "Expenses",
+   "options": "Trip Assignment Expense"
+  },
+  {
+   "fieldname": "total_expense",
+   "fieldtype": "Float",
+   "label": "Total Expense",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-11-11 22:54:09.932829",
+ "modified_by": "Administrator",
+ "module": "Logis",
+ "name": "Trip Assignment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
