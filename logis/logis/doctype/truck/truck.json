@@ -3,7 +3,6 @@
  "allow_rename": 1,
  "autoname": "field:license_plate",
  "creation": "2025-11-15 14:33:11.359888",
- "description": "",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -12,6 +11,7 @@
   "make",
   "model",
   "column_break_3",
+  "disabled",
   "chassis_no",
   "engine_no",
   "additional_details",
@@ -95,12 +95,19 @@
    "in_standard_filter": 1,
    "label": "Engine No",
    "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled",
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-15 14:45:47.686892",
+ "modified": "2025-11-15 18:42:09.268506",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Truck",

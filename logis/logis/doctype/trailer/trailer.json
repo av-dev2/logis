@@ -12,6 +12,7 @@
   "make",
   "model",
   "column_break_3",
+  "disabled",
   "chassis_no",
   "engine_no",
   "additional_details",
@@ -95,11 +96,18 @@
    "in_standard_filter": 1,
    "label": "Engine No",
    "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-15 14:57:43.864815",
+ "modified": "2025-11-15 18:41:29.480883",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trailer",
