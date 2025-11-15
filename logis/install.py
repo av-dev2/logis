@@ -7,6 +7,7 @@ def after_install():
     """
     create_item_group()
     create_inventory_dimensions()
+    create_accounting_dimensions()
 
 
 def create_item_group():
@@ -59,4 +60,42 @@ def create_inventory_dimensions():
             except Exception as e:
                 frappe.logger().error(f"Error creating Inventory Dimension '{dimension_name}': {str(e)}")
                 frappe.log_error(title=f"Error creating Inventory Dimension '{dimension_name}'", message=frappe.get_traceback())
+                frappe.db.rollback()
+
+
+def create_accounting_dimensions():
+    """
+    Create Accounting Dimension records for Truck, Trailer, and Truck Entry.
+    Note: This function does not update child tables of Accounting Dimension.
+    """
+    dimensions = [
+        {
+            "document_type": "Truck",
+            "label": "Truck",
+        },
+        {
+            "document_type": "Trailer",
+            "label": "Trailer",
+        },
+        {
+            "document_type": "Truck Entry",
+            "label": "Truck Entry",
+        }
+    ]
+    
+    for dimension_data in dimensions:
+        document_type = dimension_data["document_type"]
+        
+        # Check if Accounting Dimension already exists for this document type
+        if not frappe.db.exists("Accounting Dimension", {"document_type": document_type}):
+            try:
+                accounting_dimension = frappe.new_doc("Accounting Dimension")
+                accounting_dimension.document_type = document_type
+                accounting_dimension.label = dimension_data["label"]
+                accounting_dimension.disabled = 0
+                accounting_dimension.save(ignore_permissions=True)
+                frappe.db.commit()
+            except Exception as e:
+                frappe.logger().error(f"Error creating Accounting Dimension for '{document_type}': {str(e)}")
+                frappe.log_error(title=f"Error creating Accounting Dimension for '{document_type}'", message=frappe.get_traceback())
                 frappe.db.rollback()
