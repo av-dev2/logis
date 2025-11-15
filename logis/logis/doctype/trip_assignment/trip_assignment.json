@@ -1,33 +1,41 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:naming_series",
  "creation": "2025-11-11 21:26:04.644470",
+ "default_view": "List",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "section_break_671p",
   "truck",
   "trailer",
-  "amended_from",
   "column_break_vzgq",
   "driver",
   "license_no",
-  "track_trailer",
   "column_break_zijj",
   "company",
   "posting_date",
   "fuel_detail_section",
+  "fuel_type",
   "previous_issued_fuel",
-  "previous_fuel",
   "column_break_baup",
   "expected_trips",
-  "requested_fuel",
+  "previous_remained_fuel",
   "column_break_psva",
   "fuel_per_trip",
-  "total_fuel",
+  "requested_fuel",
   "expenses_section",
   "expenses",
-  "total_expense"
+  "column_break_ckgx",
+  "total_fuel",
+  "total_expense",
+  "references_section",
+  "truck_entry",
+  "naming_series",
+  "column_break_wyso",
+  "stock_entry",
+  "amended_from"
  ],
  "fields": [
   {
@@ -39,7 +47,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Trip Assignmant",
+   "options": "Trip Assignment",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
@@ -47,15 +55,22 @@
   {
    "fieldname": "truck",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Truck",
-   "options": "Vehicle",
+   "options": "Truck",
+   "reqd": 1,
    "search_index": 1
   },
   {
    "fieldname": "trailer",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Trailer",
-   "options": "Vehicle"
+   "options": "Trailer",
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "column_break_vzgq",
@@ -67,12 +82,17 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Driver",
-   "options": "Driver"
+   "options": "Driver",
+   "reqd": 1,
+   "search_index": 1
   },
   {
+   "fetch_from": "driver.license_number",
    "fieldname": "license_no",
    "fieldtype": "Data",
-   "label": "License No"
+   "label": "License No",
+   "read_only": 1,
+   "search_index": 1
   },
   {
    "fieldname": "column_break_zijj",
@@ -82,40 +102,32 @@
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company"
+   "options": "Company",
+   "search_index": 1
   },
   {
+   "default": "now",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Posting Date"
+   "label": "Posting Date",
+   "search_index": 1
   },
   {
-   "fieldname": "track_trailer",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Track/Trailer"
-  },
-  {
+   "depends_on": "truck & trailer",
    "fieldname": "fuel_detail_section",
    "fieldtype": "Section Break",
    "label": "Trip & Fuel Detail"
   },
   {
-   "description": "Fuel remained from last trip",
-   "fieldname": "previous_fuel",
-   "fieldtype": "Float",
-   "label": "Previous Used Fuel",
-   "read_only": 1
-  },
-  {
+   "depends_on": "fuel_type",
    "description": "Total Fuel issued from last trip",
    "fieldname": "previous_issued_fuel",
    "fieldtype": "Float",
    "label": "Previous Issued Fuel",
-   "read_only": 1
+   "read_only": 1,
+   "search_index": 1
   },
   {
    "fieldname": "column_break_baup",
@@ -126,31 +138,41 @@
    "description": "No of expected trips",
    "fieldname": "expected_trips",
    "fieldtype": "Int",
-   "label": "Expected Trips"
+   "label": "Expected Trips",
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "default": "20",
+   "description": "In Litre",
    "fieldname": "fuel_per_trip",
    "fieldtype": "Float",
-   "label": "Fuel Per each Trip"
+   "label": "Fuel Per each Trip",
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "column_break_psva",
    "fieldtype": "Column Break"
   },
   {
+   "description": "In Litre",
    "fieldname": "requested_fuel",
    "fieldtype": "Float",
    "label": "Requested Fuel",
    "read_only": 1
   },
   {
+   "default": "0",
+   "description": "In Litre",
    "fieldname": "total_fuel",
    "fieldtype": "Float",
    "label": "Total Fuel",
-   "read_only": 1
+   "read_only": 1,
+   "search_index": 1
   },
   {
+   "depends_on": "truck & trailer",
    "fieldname": "expenses_section",
    "fieldtype": "Section Break",
    "label": "Expenses"
@@ -162,20 +184,78 @@
    "options": "Trip Assignment Expense"
   },
   {
+   "default": "0",
    "fieldname": "total_expense",
    "fieldtype": "Float",
    "label": "Total Expense",
-   "read_only": 1
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "depends_on": "truck & trailer",
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "column_break_wyso",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "description": "Total Fuel remained from last trip",
+   "fieldname": "previous_remained_fuel",
+   "fieldtype": "Float",
+   "label": "Previous Remained Fuel",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_ckgx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fuel_type",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Fuel Type",
+   "options": "Item",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "HQ-TA-.YYYY.-",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "truck_entry",
+   "fieldtype": "Link",
+   "label": "Truck Entry",
+   "options": "Truck Entry",
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-11 22:54:09.932829",
+ "modified": "2025-11-15 15:09:18.037001",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Assignment",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -194,6 +274,7 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
+ "search_fields": "truck, trailer, driver, posting_date, truck_entry",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
