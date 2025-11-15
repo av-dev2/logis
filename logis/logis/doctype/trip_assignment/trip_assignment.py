@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 from logis.utils import create_stock_entry
 
@@ -31,10 +32,10 @@ class TripAssignment(Document):
 		Create Stock Entry for fuel material transfer from Store to Work in Progress.
 		"""
 		if not self.fuel_type or not self.requested_fuel:
-			frappe.throw(frappe._("Fuel Type and Requested Fuel are required to create stock entry"))
+			frappe.throw(_("Fuel Type and Requested Fuel are required to create stock entry"))
 		
 		if self.requested_fuel <= 0:
-			frappe.throw(frappe._("Requested Fuel must be greater than 0"))
+			frappe.throw(_("Requested Fuel must be greater than 0"))
 		
 		# Prepare items for stock entry
 		items = [{
