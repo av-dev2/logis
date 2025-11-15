@@ -17,6 +17,20 @@ frappe.ui.form.on("Trip Assignment", {
     onload: (frm) => {
         frm.trigger("set_filters");
     },
+    expected_trips: (frm) => {
+        frm.trigger("set_requested_fuel");
+    },
+    fuel_per_trip: (frm) => {
+        frm.trigger("set_requested_fuel");
+    },
+    requested_fuel: (frm) => {
+        const total_fuel = (frm.doc.requested_fuel || 0) + (frm.doc.previous_remained_fuel || 0);
+        frm.set_value("total_fuel", total_fuel);
+    },
+    previous_remained_fuel: (frm) => {
+        const total_fuel = (frm.doc.requested_fuel || 0) + (frm.doc.previous_remained_fuel || 0);
+        frm.set_value("total_fuel", total_fuel);
+    },
     set_filters: (frm) => {
         frm.set_query("truck", () => {
             return {
@@ -49,5 +63,9 @@ frappe.ui.form.on("Trip Assignment", {
                 }
             };
         })
+    },
+    set_requested_fuel: (frm) => {
+        const total_fuel = (frm.doc.expected_trips || 0) * (frm.doc.fuel_per_trip || 0);
+        frm.set_value("requested_fuel", total_fuel);
     }
 });
