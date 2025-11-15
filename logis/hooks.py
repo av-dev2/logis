@@ -93,7 +93,7 @@ after_migrate = [
 ]
 
 # before_install = "logis.install.before_install"
-# after_install = "logis.install.after_install"
+after_install = "logis.install.after_install"
 
 # Uninstallation
 # ------------
