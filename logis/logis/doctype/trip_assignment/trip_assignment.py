@@ -8,10 +8,24 @@ from logis.utils import create_stock_entry
 
 
 class TripAssignment(Document):
+	def before_save(self):
+		self.set_total_fuel()
+		self.set_total_expense()
+
 	def before_submit(self):
 		self.create_truck_entry()
 		self.create_fuel_stock_entry()
 
+	def set_total_fuel(self):
+		self.total_fuel = self.previous_remained_fuel or 0 + self.requested_fuel or 0
+
+	def set_total_expense(self):
+		total = 0
+		if self.expenses:
+			for expense in self.expenses:
+				total += expense.amount
+				
+		self.total_expense = total
 
 	def create_truck_entry(self):
 		truck_entry = f"{self.truck}/{self.trailer}"
@@ -26,7 +40,6 @@ class TripAssignment(Document):
 		else:
 			self.truck_name = truck_entry
 	
-
 	def create_fuel_stock_entry(self):
 		"""
 		Create Stock Entry for fuel material transfer from Store to Work in Progress.
