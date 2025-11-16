@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from frappe.utils import nowdate
 
 
 def create_stock_entry(purpose, items, source_doc):
@@ -37,4 +38,95 @@ def create_stock_entry(purpose, items, source_doc):
 	stock_entry.insert(ignore_permissions=True)
 	stock_entry.submit()
 	
-	return stock_entry
+	frappe.msgprint(_(f"Stock Entry: <b>{stock_entry.name}</b> created successfully"), alert=True)
+
+	return stock_entry.name
+
+
+def create_expense_journal_entry(source_doc):
+	"""
+	Create a Journal Entry for expenses listed in Trip Assignment.
+	
+	Args:
+		source_doc (Document): Trip Assignment document
+	
+	Returns:
+		Document: Created Journal Entry document or None if no expenses
+	"""
+	
+	if not source_doc.expenses or len(source_doc.expenses) == 0:
+		return None
+	
+	# Get company defaults
+	company = source_doc.company or frappe.defaults.get_global_default("company")
+	
+	# Fetch default currency and default cash account from company
+	company_doc = frappe.get_cached_doc("Company", company)
+	default_currency = company_doc.default_currency
+	default_cash_account = company_doc.default_cash_account
+	
+	if not default_cash_account:
+		frappe.throw(_(f"Default Cash Account is not set for Company {company}"))
+	
+	# Prepare journal entry accounts
+	accounts = []
+	total_debit = 0
+	
+	# Add debit entries for each expense
+	for expense in source_doc.expenses:
+		if not expense.expense_account:
+			frappe.throw(_(f"Expense Account is required for expense {expense.expense_name}"))
+		
+		if expense.amount <= 0:
+			frappe.throw(_(f"Expense amount must be greater than 0 for expense {expense.expense_name}"))
+		
+		debit_row = {
+			"account": expense.expense_account,
+			"debit_in_account_currency": expense.amount,
+			"credit_in_account_currency": 0,
+			# Add accounting dimensions
+			"truck": source_doc.truck,
+			"trailer": source_doc.trailer,
+			"truck_entry": source_doc.truck_entry
+		}
+		accounts.append(debit_row)
+		total_debit += expense.amount
+	
+	# Add credit entry for default cash account
+	if total_debit > 0:
+		credit_row = {
+			"account": default_cash_account,
+			"debit_in_account_currency": 0,
+			"credit_in_account_currency": total_debit,
+			# Add accounting dimensions
+			"truck": source_doc.truck,
+			"trailer": source_doc.trailer,
+			"truck_entry": source_doc.truck_entry
+		}
+		accounts.append(credit_row)
+	
+	if not accounts or total_debit == 0:
+		frappe.throw(_("No valid expense entries found to create Journal Entry"))
+	
+	# Prepare remarks
+	remarks = _(f"Trip Assignment: <b>{source_doc.name}</b>")
+	
+	# Create Journal Entry
+	journal_entry = frappe.get_doc({
+		"doctype": "Journal Entry",
+		"posting_date": source_doc.posting_date or nowdate(),
+		"company": company,
+		"accounts": accounts,
+		"user_remark": remarks,
+		# "cheque_no": source_doc.name,
+		# "cheque_date": source_doc.posting_date
+	})
+	
+	journal_entry.flags.ignore_permissions = True
+	frappe.flags.ignore_account_permission = True
+	journal_entry.insert()
+	# journal_entry.submit()
+
+	frappe.msgprint(_(f"Journal Entry: <b>{journal_entry.name}</b> created successfully"), alert=True)
+	
+	return journal_entry.name
