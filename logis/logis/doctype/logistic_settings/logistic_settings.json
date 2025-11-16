@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-16 23:35:37.823858",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "main_warehouse",
+  "column_break_woel",
+  "work_warehouse"
+ ],
+ "fields": [
+  {
+   "description": "A warehouse act like main warehouse which store imported or purchased stock",
+   "fieldname": "main_warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Main Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_woel",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "A warehouse for storing Fuel and Spare Parts during a work in progress",
+   "fieldname": "work_warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Work Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-11-16 23:43:30.221872",
+ "modified_by": "Administrator",
+ "module": "Logis",
+ "name": "Logistic Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
