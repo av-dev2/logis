@@ -67,5 +67,26 @@ frappe.ui.form.on("Trip Assignment", {
     set_requested_fuel: (frm) => {
         const total_fuel = (frm.doc.expected_trips || 0) * (frm.doc.fuel_per_trip || 0);
         frm.set_value("requested_fuel", total_fuel);
+    },
+    calculate_total_expense: (frm) => {
+        let total = 0;
+        if (frm.doc.expenses) {
+            frm.doc.expenses.forEach((row) => {
+                total += (row.amount || 0);
+            });
+        }
+        frm.set_value("total_expense", total);
+    }
+});
+
+frappe.ui.form.on("Trip Assignment Expense", {
+    expenses_add: (frm) => {
+        frm.trigger("calculate_total_expense");
+    },
+    expenses_remove: (frm) => {
+        frm.trigger("calculate_total_expense");
+    },
+    amount: (frm) => {
+        frm.trigger("calculate_total_expense");
     }
 });
