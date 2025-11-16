@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "expense_name",
+  "expense_account",
   "amount"
  ],
  "fields": [
@@ -15,23 +16,38 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Expense Name",
-   "options": "Item",
-   "reqd": 1
+   "options": "Logistic Expense",
+   "reqd": 1,
+   "search_index": 1
   },
   {
+   "bold": 1,
+   "fetch_from": "expense_name.fixed_amount",
    "fieldname": "amount",
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Amount",
    "non_negative": 1,
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "expense_name.expense_account",
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Expense Account",
+   "options": "Account",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-11 22:50:14.415530",
+ "modified": "2025-11-16 23:59:24.841591",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Assignment Expense",
