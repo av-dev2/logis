@@ -38,19 +38,12 @@ class TripAssignment(Document):
 			frappe.throw(_("Requested Fuel must be greater than 0"))
 		
 		# Prepare items for stock entry
+		settings_doc = frappe.get_cached_doc("Logistic Settings", "Logistic Settings")
 		items = [{
 			"item_code": self.fuel_type,
 			"qty": self.requested_fuel,
-			"s_warehouse": frappe.db.get_value(
-				"Warehouse",
-				{"name": ["like", f"%Store%"]},
-				"name"
-			),
-			"t_warehouse": frappe.db.get_value(
-				"Warehouse",
-				{"name": ["like", f"%Work In Progress%"]},
-				"name"
-			),
+			"s_warehouse": settings_doc.main_warehouse,
+			"t_warehouse": settings_doc.work_warehouse,
 			"truck": self.truck,
 			"trailer": self.trailer,
 			"truck_entry": self.truck_entry
