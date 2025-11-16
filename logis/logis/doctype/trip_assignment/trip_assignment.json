@@ -35,7 +35,9 @@
   "naming_series",
   "column_break_wyso",
   "stock_entry",
-  "amended_from"
+  "amended_from",
+  "column_break_piju",
+  "journal_entry"
  ],
  "fields": [
   {
@@ -210,6 +212,14 @@
    "search_index": 1
   },
   {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
    "description": "Total Fuel remained from last trip",
    "fieldname": "previous_remained_fuel",
    "fieldtype": "Float",
@@ -245,13 +255,17 @@
    "options": "Truck Entry",
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "column_break_piju",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-15 15:09:18.037001",
+ "modified": "2025-11-17 00:42:12.895955",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Assignment",
