@@ -23,10 +23,22 @@
   "section_break_crvv",
   "trips",
   "section_break_hvwd",
-  "truck_entry",
   "column_break_dbpe",
-  "naming_series",
+  "total_income",
+  "total_expense",
+  "column_break_khmg",
+  "no_of_trips",
+  "fuel_per_each_trip",
   "column_break_rrwh",
+  "fuel_provided",
+  "fuel_consumed",
+  "fuel_remained",
+  "section_break_lkfd",
+  "stock_entry",
+  "truck_entry",
+  "column_break_homj",
+  "sales_invoice",
+  "naming_series",
   "amended_from"
  ],
  "fields": [
@@ -175,13 +187,97 @@
   {
    "fieldname": "column_break_aifh",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_income",
+   "fieldtype": "Float",
+   "label": "Total Income",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.total_expense",
+   "fieldname": "total_expense",
+   "fieldtype": "Float",
+   "label": "Total Expense",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.total_fuel",
+   "fieldname": "fuel_provided",
+   "fieldtype": "Float",
+   "label": "Fuel Provided",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "fuel_consumed",
+   "fieldtype": "Float",
+   "label": "Fuel Consumed",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "fuel_remained",
+   "fieldtype": "Float",
+   "label": "Fuel Remained",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_lkfd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_homj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "label": "Sales Invoice",
+   "options": "Sales Invoice",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_khmg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "no_of_trips",
+   "fieldtype": "Int",
+   "label": "No of Trips",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.fuel_per_trip",
+   "fieldname": "fuel_per_each_trip",
+   "fieldtype": "Float",
+   "label": "Fuel Per Each Trip",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-17 16:42:15.154469",
+ "modified": "2025-11-17 18:26:45.417012",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Settlement",
