@@ -1,0 +1,211 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-11-17 16:27:55.550289",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "trip_assignment",
+  "column_break_nnhx",
+  "column_break_aifh",
+  "section_break_uqki",
+  "column_break_bizu",
+  "truck",
+  "trailer",
+  "column_break_ctcj",
+  "driver",
+  "license_no",
+  "column_break_xjcp",
+  "company",
+  "posting_date",
+  "section_break_crvv",
+  "trips",
+  "section_break_hvwd",
+  "truck_entry",
+  "column_break_dbpe",
+  "naming_series",
+  "column_break_rrwh",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "HQ-TS-.YYYY.-",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "trip_assignment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Trip Assignment",
+   "options": "Trip Assignment",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.truck",
+   "fieldname": "truck",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Truck",
+   "options": "Truck",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.trailer",
+   "fieldname": "trailer",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Trailer",
+   "options": "Trailer",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.driver",
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Driver",
+   "options": "Driver",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.license_no",
+   "fieldname": "license_no",
+   "fieldtype": "Data",
+   "label": "License No",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "trip_assignment.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Posting Date",
+   "search_index": 1
+  },
+  {
+   "fieldname": "trips",
+   "fieldtype": "Table",
+   "label": "Trips",
+   "options": "Trip Settlement Detail",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Trip Settlement",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_bizu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ctcj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xjcp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "trip_assignment",
+   "fieldname": "section_break_crvv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "trip_assignment",
+   "fieldname": "section_break_hvwd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_rrwh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_nnhx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "trip_assignment",
+   "fieldname": "section_break_uqki",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "trip_assignment.truck_entry",
+   "fieldname": "truck_entry",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Truck Entry",
+   "options": "Truck Entry",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_dbpe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_aifh",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-11-17 16:42:15.154469",
+ "modified_by": "Administrator",
+ "module": "Logis",
+ "name": "Trip Settlement",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
