@@ -130,3 +130,53 @@ def create_expense_journal_entry(source_doc):
 	frappe.msgprint(_(f"Journal Entry: <b>{journal_entry.name}</b> created successfully"), alert=True)
 	
 	return journal_entry.name
+
+
+def create_vehicle(source_doc):
+	"""
+	Create a Vehicle document from Truck or Trailer doctype.
+	
+	This function is called from after_insert event of Truck and Trailer doctypes
+	to automatically create a corresponding Vehicle record.
+	
+	Args:
+		source_doc (Document): Truck or Trailer document
+	
+	Returns:
+		str: Name of the created Vehicle document or None if already exists
+	"""
+	
+	# Determine doctype and set appropriate flags
+	
+	if source_doc.doctype not in ["Truck", "Trailer"]:
+		frappe.throw(_("create_vehicle function can only be called from Truck or Trailer doctype"))
+	
+	# Check if Vehicle already exists with this license plate
+	if frappe.db.exists("Vehicle", source_doc.license_plate):
+		frappe.msgprint(_(f"Vehicle <b>{source_doc.license_plate}</b> already exists"), alert=True)
+		return None
+	
+	# Prepare Vehicle data from source document
+	vehicle_data = {
+		"doctype": "Vehicle",
+		"license_plate": source_doc.license_plate,
+		"make": source_doc.make,
+		"model": source_doc.model,
+		"chassis_no": source_doc.chassis_no,
+		"csf_tz_engine_number": source_doc.engine_no,
+		"color": source_doc.color,
+		"wheels": source_doc.wheels,
+		"doors": source_doc.doors,
+		"disabled": source_doc.disabled or 0,
+		"is_truck": 1 if source_doc.doctype == "Truck" else 0,
+		"is_trailer": 1 if source_doc.doctype == "Trailer" else 0
+	}
+	
+	vehicle = frappe.get_doc(vehicle_data)
+	vehicle.flags.ignore_mandatory = True
+	vehicle.flags.ignore_permissions = True
+	vehicle.insert()
+	
+	frappe.msgprint(_(f"Vehicle <b>{vehicle.name}</b> created successfully from {source_doc.doctype}"), alert=True)
+	
+	return vehicle.name
