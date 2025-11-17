@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+from logis.utils import create_vehicle
 
 
 class Truck(Document):
@@ -41,3 +42,8 @@ class Truck(Document):
 	def on_trash(self):
 		"""Called before document is deleted."""
 		pass
+	
+	def after_insert(self):
+		"""Called after document is inserted into database."""
+		
+		create_vehicle(self)
