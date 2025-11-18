@@ -229,6 +229,7 @@
    "search_index": 1
   },
   {
+   "depends_on": "trip_assignment",
    "fieldname": "section_break_lkfd",
    "fieldtype": "Section Break"
   },
@@ -249,6 +250,7 @@
    "fieldtype": "Link",
    "label": "Sales Invoice",
    "options": "Sales Invoice",
+   "read_only": 1,
    "search_index": 1
   },
   {
@@ -277,7 +279,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-17 18:26:45.417012",
+ "modified": "2025-11-19 00:08:15.591218",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Settlement",
