@@ -7,6 +7,7 @@
  "field_order": [
   "main_warehouse",
   "column_break_woel",
+  "sales_item",
   "work_warehouse"
  ],
  "fields": [
@@ -31,13 +32,20 @@
    "label": "Work Warehouse",
    "options": "Warehouse",
    "reqd": 1
+  },
+  {
+   "fieldname": "sales_item",
+   "fieldtype": "Link",
+   "label": "Sales Item",
+   "options": "Item",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-11-16 23:52:52.284445",
+ "modified": "2025-11-19 00:50:32.334521",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Logistic Settings",
