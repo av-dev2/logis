@@ -6,6 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.query_builder import DocType
 from frappe.utils import get_url_to_form
+from logis.utils import create_sales_invoice
 
 
 class TripSettlement(Document):
@@ -38,6 +39,13 @@ class TripSettlement(Document):
 
 	def before_submit(self):
 		self.validate_duplicate_movement_order()
+		self.create_invoice()
+	
+	def create_invoice(self):
+		"""Create Sales Invoice for the Trip Settlement."""
+		
+		if not self.sales_invoice:
+			create_sales_invoice(self)
 	
 	def on_submit(self):
 		"""Called when document is submitted."""
