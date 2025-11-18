@@ -2,7 +2,10 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
+from frappe.query_builder import DocType
+from frappe.utils import get_url_to_form
 
 
 class TripSettlement(Document):
@@ -18,6 +21,9 @@ class TripSettlement(Document):
 		pass
 	# end: auto-generated types
 
+	def before_insert(self):
+		self.validate_duplicate_movement_order()
+
 	def validate(self):
 		"""Validate document before saving."""
 		pass
@@ -29,6 +35,9 @@ class TripSettlement(Document):
 	def on_update(self):
 		"""Called after document is saved."""
 		pass
+
+	def before_submit(self):
+		self.validate_duplicate_movement_order()
 	
 	def on_submit(self):
 		"""Called when document is submitted."""
@@ -41,3 +50,29 @@ class TripSettlement(Document):
 	def on_trash(self):
 		"""Called before document is deleted."""
 		pass
+	
+	def validate_duplicate_movement_order(self):
+		"""Validate that there are no duplicate movement orders in the settlement."""
+
+		tsd = DocType("Trip Settlement Detail")
+
+		for row in self.trips:
+			duplicates = (
+				frappe.qb.from_(tsd)
+				.select(
+					tsd.name,
+					tsd.parent
+				)
+				.where(
+					(tsd.movement_order == row.movement_order)
+					& (tsd.parent != self.name)
+				)
+			).run(as_dict=True)
+
+			if len(duplicates) > 0:
+				url = get_url_to_form("Trip Settlement", duplicates[0].parent)
+				frappe.throw(
+					_(
+						"Movement Order: <b>{row.movement_order}</b> RowNo: {row.idx} is already settled in another Trip Settlement: <a href='{url}'><b>{duplicates[0].parent}</b></a>."
+					)
+				)
