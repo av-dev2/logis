@@ -180,3 +180,69 @@ def create_vehicle(source_doc):
 	frappe.msgprint(_(f"Vehicle <b>{vehicle.name}</b> created successfully from {source_doc.doctype}"), alert=True)
 	
 	return vehicle.name
+
+
+def create_sales_invoice(source_doc):
+	"""
+	Create a Sales Invoice from Trip Settlement document.
+	
+	This function is called from the before_submit event of Trip Settlement doctype.
+	It picks the sales item from Logistic Settings and uses the total_income from
+	Trip Settlement as the rate and amount.
+	
+	Args:
+		source_doc (Document): Trip Settlement document
+	
+	Returns:
+		str: Name of the created Sales Invoice document
+	"""
+	
+	# Validate total_income
+	if not source_doc.total_income or source_doc.total_income <= 0:
+		frappe.throw(_("Total Income must be greater than 0 to create Sales Invoice"))
+	
+	# Get sales item from Logistic Settings
+	logistic_settings = frappe.get_single("Logistic Settings")
+	
+	if not logistic_settings.sales_item:
+		frappe.throw(_("Sales Item is not configured in Logistic Settings. Please configure it first."))
+	
+	item = frappe.get_cached_doc("Item", logistic_settings.sales_item)
+	
+	# Prepare Sales Invoice Item
+	items = [{
+		"item_code": item.name,
+		"item_name": item.item_name,
+		"description": item.description or item.item_name,
+		"qty": 1,
+		"uom": item.stock_uom,
+		"rate": source_doc.total_income,
+		"amount": source_doc.total_income,
+		"truck": source_doc.truck,
+		"trailer": source_doc.trailer,
+		"truck_entry": source_doc.truck_entry
+	}]
+	
+	# Create Sales Invoice
+	sales_invoice = frappe.get_doc({
+		"doctype": "Sales Invoice",
+		"customer": source_doc.customer,
+		"company": source_doc.company,
+		"posting_date": source_doc.posting_date or nowdate(),
+		"items": items,
+		"truck": source_doc.truck,
+		"trailer": source_doc.trailer,
+		"truck_entry": source_doc.truck_entry,
+		"remarks": _(f"Sales Invoice for Trip Settlement: {source_doc.name}")
+	})
+	
+	sales_invoice.flags.ignore_permissions = True
+	sales_invoice.insert()
+	sales_invoice.submit()
+	
+	# Update Trip Settlement with Sales Invoice reference
+	frappe.db.set_value("Trip Settlement", source_doc.name, "sales_invoice", sales_invoice.name)
+	
+	frappe.msgprint(_(f"Sales Invoice: <b>{sales_invoice.name}</b> created successfully"), alert=True)
+	
+	return sales_invoice.name
