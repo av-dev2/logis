@@ -63,6 +63,14 @@ frappe.ui.form.on("Trip Assignment", {
                 }
             };
         })
+
+        frm.set_query("expense_name", "expenses", () => {
+            return {
+                filters: {
+                    item_group: ["in", ["Direct Expenses", "Indirect Expenses"]]
+                }
+            };
+        })
     },
     set_requested_fuel: (frm) => {
         const total_fuel = (frm.doc.expected_trips || 0) * (frm.doc.fuel_per_trip || 0);
