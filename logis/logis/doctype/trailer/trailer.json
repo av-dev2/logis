@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:license_plate",
  "creation": "2017-03-03 18:29:32.299741",
@@ -107,7 +108,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-15 18:41:29.480883",
+ "modified": "2025-11-21 22:33:03.528201",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trailer",

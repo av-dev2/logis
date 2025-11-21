@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:license_plate",
  "creation": "2025-11-15 14:33:11.359888",
@@ -107,7 +108,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-15 18:42:09.268506",
+ "modified": "2025-11-21 22:33:18.322759",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Truck",
