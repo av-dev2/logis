@@ -14,6 +14,7 @@ from logis.utils import (
 class TripAssignment(Document):
 	def before_save(self):
 		self.set_total_fuel()
+		self.fetch_pfuel_values()
 		self.set_total_expense()
 
 	def before_submit(self):
@@ -35,6 +36,30 @@ class TripAssignment(Document):
 				total += expense.amount
 				
 		self.total_expense = total
+
+	def fetch_pfuel_values(self):
+		"""
+		Fetch previous issued fuel and remained fuel from the latest submitted Trip Settlement
+		for the same truck.
+		"""
+		if not self.truck:
+			return
+		
+		# Get the latest submitted Trip Settlement for this truck
+		latest_settlement = frappe.db.get_value(
+			"Trip Settlement",
+			filters={
+				"truck": self.truck,
+				"docstatus": 1  # Only submitted documents
+			},
+			fieldname=["fuel_provided", "fuel_remained"],
+			order_by="posting_date desc, creation desc"
+		)
+		
+		if latest_settlement:
+			# latest_settlement returns a tuple (fuel_provided, fuel_remained)
+			self.previous_issued_fuel = latest_settlement[0] or 0
+			self.previous_remained_fuel = latest_settlement[1] or 0
 
 	def create_truck_entry(self):
 		truck_entry = f"{self.truck}/{self.trailer}"
