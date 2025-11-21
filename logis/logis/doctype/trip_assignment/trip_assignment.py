@@ -4,7 +4,11 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from logis.utils import create_stock_entry, create_expense_journal_entry
+from logis.utils import (
+    create_stock_entry,
+    create_purchase_invoice,
+    create_expense_journal_entry
+)
 
 
 class TripAssignment(Document):
@@ -15,7 +19,8 @@ class TripAssignment(Document):
 	def before_submit(self):
 		self.create_truck_entry()
 		self.create_fuel_stock_entry()
-		self.create_expense_journal_entry()
+		self.create_expense_purchase_invoice()
+		# self.create_expense_journal_entry()
 
 	def set_total_fuel(self):
 		requested_fuel = ((self.fuel_per_trip or 0) * (self.expected_trips or 0)) - (self.previous_remained_fuel or 0)
@@ -74,6 +79,17 @@ class TripAssignment(Document):
 		
 		self.db_set("stock_entry", stock_entry, update_modified=False)
 	
+	def create_expense_purchase_invoice(self):
+		"""
+		Create Purchase Invoice for expenses listed in Trip Assignment.
+		"""
+		if not self.expenses or len(self.expenses) == 0:
+			frappe.throw(_("No expenses found to create Purchase Invoice"))
+		
+		purchase_invoice = create_purchase_invoice(source_doc=self)
+		
+		self.db_set("purchase_invoice", purchase_invoice, update_modified=False)
+
 	def create_expense_journal_entry(self):
 		"""
 		Create Journal Entry for expenses listed in Trip Assignment.
