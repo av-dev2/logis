@@ -30,6 +30,7 @@
   "column_break_ckgx",
   "total_fuel",
   "total_expense",
+  "supplier",
   "references_section",
   "truck_entry",
   "naming_series",
@@ -37,7 +38,8 @@
   "stock_entry",
   "amended_from",
   "column_break_piju",
-  "journal_entry"
+  "journal_entry",
+  "purchase_invoice"
  ],
  "fields": [
   {
@@ -165,6 +167,7 @@
    "read_only": 1
   },
   {
+   "bold": 1,
    "default": "0",
    "description": "In Litre",
    "fieldname": "total_fuel",
@@ -186,6 +189,7 @@
    "options": "Trip Assignment Expense"
   },
   {
+   "bold": 1,
    "default": "0",
    "fieldname": "total_expense",
    "fieldtype": "Float",
@@ -259,13 +263,28 @@
   {
    "fieldname": "column_break_piju",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier",
+   "search_index": 1
+  },
+  {
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Link",
+   "label": "Purchase Invoice",
+   "options": "Purchase Invoice",
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-21 23:49:15.709918",
+ "modified": "2025-11-22 00:25:46.045755",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Assignment",
