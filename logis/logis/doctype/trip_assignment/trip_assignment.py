@@ -18,7 +18,10 @@ class TripAssignment(Document):
 		self.create_expense_journal_entry()
 
 	def set_total_fuel(self):
-		self.total_fuel = self.previous_remained_fuel or 0 + self.requested_fuel or 0
+		requested_fuel = ((self.fuel_per_trip or 0) * (self.expected_trips or 0)) - (self.previous_remained_fuel or 0)
+		
+		self.requested_fuel = requested_fuel
+		self.total_fuel = (self.previous_remained_fuel or 0) + (self.requested_fuel or 0)
 
 	def set_total_expense(self):
 		total = 0
