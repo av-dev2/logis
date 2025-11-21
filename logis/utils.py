@@ -246,3 +246,91 @@ def create_sales_invoice(source_doc):
 	frappe.msgprint(_(f"Sales Invoice: <b>{sales_invoice.name}</b> created successfully"), alert=True)
 	
 	return sales_invoice.name
+
+
+def create_purchase_invoice(source_doc):
+	"""
+	Create a Purchase Invoice from Trip Assignment document.
+	
+	This function is called from the before_submit event of Trip Assignment doctype.
+	It creates a Purchase Invoice based on the expenses listed in the child table.
+	Each expense item becomes a line item in the Purchase Invoice.
+	
+	Args:
+		source_doc (Document): Trip Assignment document
+	
+	Returns:
+		str: Name of the created Purchase Invoice document or None if no expenses
+	"""
+	
+	# Check if there are expenses
+	if not source_doc.expenses or len(source_doc.expenses) == 0:
+		return None
+	
+	# Validate supplier
+	if not source_doc.supplier:
+		frappe.throw(_("Supplier is required to create Purchase Invoice"))
+	
+	# Get company
+	company = source_doc.company or frappe.defaults.get_global_default("company")
+	
+	# Prepare Purchase Invoice Items
+	items = []
+	for expense in source_doc.expenses:
+		if not expense.expense_name:
+			frappe.throw(_(f"Expense Name is required for all expenses"))
+		
+		if not expense.amount or expense.amount <= 0:
+			frappe.throw(_(f"Expense amount must be greater than 0 for expense {expense.expense_name}"))
+		
+		# Get item details
+		item = frappe.get_cached_doc("Item", expense.expense_name)
+		
+		expense_account = frappe.get_value("Item Default", 
+			{"parent": item.name, "company": company}, 
+			"expense_account")
+		
+		if not expense_account:
+			frappe.throw(_(f"Expense Account is required for expense {expense.expense_name}"))
+		
+		item_row = {
+			"item_code": expense.expense_name,
+			"item_name": item.item_name,
+			"description": item.description or item.item_name,
+			"qty": 1,
+			"uom": item.stock_uom or item.purchase_uom or "Nos",
+			"rate": expense.amount,
+			"amount": expense.amount,
+			"expense_account": expense_account,
+			# Add accounting dimensions
+			"truck": source_doc.truck,
+			"trailer": source_doc.trailer,
+			"truck_entry": source_doc.truck_entry
+		}
+		items.append(item_row)
+	
+	if not items:
+		frappe.throw(_("No valid expense items found to create Purchase Invoice"))
+	
+	# Create Purchase Invoice
+	purchase_invoice = frappe.get_doc({
+		"doctype": "Purchase Invoice",
+		"supplier": source_doc.supplier,
+		"company": company,
+		"posting_date": source_doc.posting_date or nowdate(),
+		"bill_date": source_doc.posting_date or nowdate(),
+		"items": items,
+		"truck": source_doc.truck,
+		"trailer": source_doc.trailer,
+		"truck_entry": source_doc.truck_entry,
+		"remarks": _(f"Purchase Invoice for Trip Assignment: {source_doc.name}")
+	})
+	
+	purchase_invoice.flags.ignore_permissions = True
+	frappe.flags.ignore_account_permission = True
+	purchase_invoice.insert()
+	purchase_invoice.submit()  # Optionally submit if needed
+	
+	frappe.msgprint(_(f"Purchase Invoice: <b>{purchase_invoice.name}</b> created successfully"), alert=True)
+	
+	return purchase_invoice.name
