@@ -117,7 +117,7 @@
    "search_index": 1
   },
   {
-   "depends_on": "truck & trailer",
+   "depends_on": "eval: doc.truck && doc.trailer",
    "fieldname": "fuel_detail_section",
    "fieldtype": "Section Break",
    "label": "Trip & Fuel Detail"
@@ -174,7 +174,7 @@
    "search_index": 1
   },
   {
-   "depends_on": "truck & trailer",
+   "depends_on": "eval: doc.truck && doc.trailer",
    "fieldname": "expenses_section",
    "fieldtype": "Section Break",
    "label": "Expenses"
@@ -265,7 +265,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-17 00:42:12.895955",
+ "modified": "2025-11-21 23:49:15.709918",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Assignment",
