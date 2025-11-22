@@ -23,15 +23,17 @@ class TripSettlement(Document):
 	# end: auto-generated types
 
 	def before_insert(self):
-		self.validate_duplicate_movement_order()
+		"""Called before inserting a new document."""
+		pass
 
 	def validate(self):
 		"""Validate document before saving."""
 		pass
 	
 	def before_save(self):
-		"""Called before document is saved."""
-		pass
+		self.validate_duplicate_movement_order()
+		self.set_total_fuel_provided()
+		self.set_total_income()
 	
 	def on_update(self):
 		"""Called after document is saved."""
@@ -39,6 +41,7 @@ class TripSettlement(Document):
 
 	def before_submit(self):
 		self.validate_duplicate_movement_order()
+		self.create_stock_entry()
 		self.create_invoice()
 	
 	def create_invoice(self):
@@ -73,7 +76,7 @@ class TripSettlement(Document):
 				)
 				.where(
 					(tsd.movement_order == row.movement_order)
-					& (tsd.parent != self.name)
+					& (tsd.name != row.name)
 				)
 			).run(as_dict=True)
 
@@ -81,6 +84,21 @@ class TripSettlement(Document):
 				url = get_url_to_form("Trip Settlement", duplicates[0].parent)
 				frappe.throw(
 					_(
-						"Movement Order: <b>{row.movement_order}</b> RowNo: {row.idx} is already settled in another Trip Settlement: <a href='{url}'><b>{duplicates[0].parent}</b></a>."
+						f"Movement Order: <b>{row.movement_order}</b> RowNo: {row.idx} is already settled in another Trip Settlement: <a href='{url}'><b>{duplicates[0].parent}</b></a>."
 					)
 				)
+	
+	def set_total_fuel_provided(self):
+		"""Set the total fuel provided for the trip settlement."""
+		self.no_of_trips = len(self.trips)
+		self.fuel_consumed = self.no_of_trips * self.fuel_per_each_trip
+		self.fuel_remained = self.fuel_provided - self.fuel_consumed
+	
+	def set_total_income(self):
+		"""Set the total income for the trip settlement."""
+		total = 0
+		for row in self.trips:
+			total += row.amount
+		
+		self.total_income = total
+	
