@@ -69,10 +69,10 @@ class TripAssignment(Document):
 			truck_entry_doc.truck_name = truck_entry
 			truck_entry_doc.save(ignore_permissions=True)
 
-			self.truck_name = truck_entry_doc.name
+			self.truck_entry = truck_entry_doc.name
 		
 		else:
-			self.truck_name = truck_entry
+			self.truck_entry = truck_entry
 	
 	def create_fuel_stock_entry(self):
 		"""
