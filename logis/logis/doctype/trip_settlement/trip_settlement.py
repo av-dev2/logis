@@ -6,7 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.query_builder import DocType
 from frappe.utils import get_url_to_form
-from logis.utils import create_sales_invoice
+from logis.utils import create_sales_invoice, create_stock_entry
 
 
 class TripSettlement(Document):
@@ -101,4 +101,29 @@ class TripSettlement(Document):
 			total += row.amount
 		
 		self.total_income = total
+	
+	def create_stock_entry(self):
+		"""
+		Create Stock Entry for fuel material transfer from Store to Work in Progress.
+		"""
+		
+		# Prepare items for stock entry
+		trip_assignment = frappe.get_cached_doc("Trip Assignment", self.trip_assignment)
+		settings_doc = frappe.get_cached_doc("Logistic Settings", "Logistic Settings")
+		items = [{
+			"item_code": trip_assignment.fuel_type,
+			"qty": self.fuel_consumed,
+			"s_warehouse": settings_doc.work_warehouse,
+			"truck": self.truck,
+			"trailer": self.trailer,
+			"truck_entry": self.truck_entry
+		}]
+		
+		stock_entry = create_stock_entry(
+			purpose="Material Issue",
+			items=items,
+			source_doc=self
+		)
+		
+		self.db_set("stock_entry", stock_entry, update_modified=False)
 	
