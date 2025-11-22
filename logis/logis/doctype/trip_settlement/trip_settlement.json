@@ -9,6 +9,7 @@
  "field_order": [
   "trip_assignment",
   "column_break_nnhx",
+  "customer",
   "column_break_aifh",
   "section_break_uqki",
   "column_break_bizu",
@@ -34,12 +35,13 @@
   "fuel_consumed",
   "fuel_remained",
   "section_break_lkfd",
-  "stock_entry",
   "truck_entry",
-  "column_break_homj",
-  "sales_invoice",
   "naming_series",
-  "amended_from"
+  "column_break_homj",
+  "stock_entry",
+  "amended_from",
+  "column_break_enbd",
+  "sales_invoice"
  ],
  "fields": [
   {
@@ -193,6 +195,7 @@
    "fieldtype": "Float",
    "label": "Total Income",
    "non_negative": 1,
+   "read_only": 1,
    "search_index": 1
   },
   {
@@ -273,13 +276,25 @@
    "non_negative": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_enbd",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-19 00:08:15.591218",
+ "modified": "2025-11-22 09:13:48.631826",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Settlement",
