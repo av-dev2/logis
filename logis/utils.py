@@ -34,8 +34,28 @@ def create_stock_entry(purpose, items, source_doc):
 	stock_entry.stock_entry_type = purpose
 	stock_entry.purpose = purpose
 	stock_entry.company = source_doc.get("company") or frappe.defaults.get_global_default("company")
-	stock_entry.items = items
-	stock_entry.insert(ignore_permissions=True)
+	# stock_entry.items = items
+	for itm in items:
+		item_row = stock_entry.append("items")
+		item_row.item_code = itm.get("item_code")
+		item_row.qty = itm.get("qty")
+		item_row.s_warehouse = itm.get("s_warehouse")
+
+		if purpose == "Material Transfer":
+			item_row.t_warehouse = itm.get("t_warehouse")
+		
+			# Set accounting dimensions
+			item_row.to_truck = itm.get("truck")
+			item_row.to_trailer = itm.get("trailer")
+			item_row.to_truck_entry = itm.get("truck_entry")
+		
+		if purpose == "Material Issue":
+			item_row.truck = itm.get("truck")
+			item_row.trailer = itm.get("trailer")
+			item_row.truck_entry = itm.get("truck_entry")
+
+		
+	stock_entry.save(ignore_permissions=True)
 	stock_entry.submit()
 	
 	frappe.msgprint(_(f"Stock Entry: <b>{stock_entry.name}</b> created successfully"), alert=True)
