@@ -198,7 +198,7 @@
    "search_index": 1
   },
   {
-   "depends_on": "truck & trailer",
+   "depends_on": "eval: doc.truck && doc.trailer",
    "fieldname": "references_section",
    "fieldtype": "Section Break",
    "label": "References"
@@ -284,7 +284,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-22 00:25:46.045755",
+ "modified": "2025-11-22 08:07:35.886238",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Assignment",
