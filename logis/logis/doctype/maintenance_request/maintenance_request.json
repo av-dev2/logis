@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-11-25 16:51:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "truck",
+  "trailer",
+  "column_break_pgmi",
+  "company",
+  "posting_date",
+  "status",
+  "section_break_ltqc",
+  "complain_details_column",
+  "complains",
+  "column_break_wnyp",
+  "faults",
+  "battery_condition_column",
+  "excellent",
+  "good",
+  "poor",
+  "inspectionsdiagnosis_section",
+  "inspections",
+  "section_break_pgmj",
+  "naming_series",
+  "column_break_dhlz",
+  "amended_from",
+  "tab_break_vdpv",
+  "spares"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Naming Series",
+   "options": "HQ-MR-.YYYY.-.#####",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Maintenance Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "truck",
+   "fieldtype": "Link",
+   "label": "Truck",
+   "options": "Truck",
+   "search_index": 1
+  },
+  {
+   "fieldname": "trailer",
+   "fieldtype": "Link",
+   "label": "Trailer",
+   "options": "Trailer",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_pgmi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "search_index": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "search_index": 1
+  },
+  {
+   "bold": 1,
+   "columns": 60,
+   "fieldname": "complains",
+   "fieldtype": "Table",
+   "label": "Complains",
+   "options": "Maintenance Complain Detail"
+  },
+  {
+   "fieldname": "inspections",
+   "fieldtype": "Table",
+   "label": "Inspections",
+   "options": "Maintenance Inspection Detail"
+  },
+  {
+   "columns": 40,
+   "fieldname": "battery_condition_column",
+   "fieldtype": "Column Break",
+   "label": "Battery Condition"
+  },
+  {
+   "default": "0",
+   "fieldname": "excellent",
+   "fieldtype": "Check",
+   "label": "Excellent",
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "good",
+   "fieldtype": "Check",
+   "label": "Good",
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "poor",
+   "fieldtype": "Check",
+   "label": "Poor",
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_pgmj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_dhlz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "inspectionsdiagnosis_section",
+   "fieldtype": "Section Break",
+   "label": "Inspections/Diagnosis"
+  },
+  {
+   "fieldname": "section_break_ltqc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_wnyp",
+   "fieldtype": "Column Break",
+   "label": "Fault Details"
+  },
+  {
+   "bold": 1,
+   "fieldname": "faults",
+   "fieldtype": "Table",
+   "label": "Faults",
+   "options": "Maintenance Fault Detail"
+  },
+  {
+   "fieldname": "complain_details_column",
+   "fieldtype": "Column Break",
+   "label": "Complain Details"
+  },
+  {
+   "fieldname": "tab_break_vdpv",
+   "fieldtype": "Tab Break",
+   "label": "Spares"
+  },
+  {
+   "fieldname": "spares",
+   "fieldtype": "Table",
+   "label": "Spares",
+   "options": "Maintenance Spare Detail"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nIn Progress\nCompleted",
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-11-29 13:28:09.339089",
+ "modified_by": "Administrator",
+ "module": "Logis",
+ "name": "Maintenance Request",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
