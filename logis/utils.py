@@ -3,7 +3,7 @@ from frappe import _
 from frappe.utils import nowdate
 
 
-def create_stock_entry(purpose, items, source_doc):
+def create_stock_entry(purpose, items, source_doc, submit=True):
 	"""
 	Create a Stock Entry for Material Transfer or Material Issue with Inventory Dimensions.
 	
@@ -45,18 +45,48 @@ def create_stock_entry(purpose, items, source_doc):
 			item_row.t_warehouse = itm.get("t_warehouse")
 		
 			# Set accounting dimensions
-			item_row.to_truck = itm.get("truck")
-			item_row.to_trailer = itm.get("trailer")
-			item_row.to_truck_entry = itm.get("truck_entry")
+			if itm.get("from_truck"):
+				item_row.truck = itm.get("from_truck")
+			
+			if itm.get("from_trailer"):
+				item_row.trailer = itm.get("from_trailer")
+
+			if itm.get("from_truck_entry"):
+				item_row.truck_entry = itm.get("from_truck_entry")
+
+			if itm.get("to_truck"):
+				item_row.to_truck = itm.get("to_truck")
+
+			if itm.get("to_trailer"):
+				item_row.to_trailer = itm.get("to_trailer")
+				
+			if itm.get("to_truck_entry"):
+				item_row.to_truck_entry = itm.get("to_truck_entry")
+
 		
 		if purpose == "Material Issue":
-			item_row.truck = itm.get("truck")
-			item_row.trailer = itm.get("trailer")
-			item_row.truck_entry = itm.get("truck_entry")
+			if itm.get("from_truck"):
+				item_row.truck = itm.get("from_truck")
+
+			if itm.get("from_trailer"):
+				item_row.trailer = itm.get("from_trailer")
+
+			if itm.get("from_truck_entry"):
+				item_row.truck_entry = itm.get("from_truck_entry")
+			
+			if itm.get("to_truck"):
+				item_row.to_truck = itm.get("to_truck")
+				
+			if itm.get("to_trailer"):
+				item_row.to_trailer = itm.get("to_trailer")
+
+			if itm.get("to_truck_entry"):
+				item_row.to_truck_entry = itm.get("to_truck_entry")
 
 		
 	stock_entry.save(ignore_permissions=True)
-	stock_entry.submit()
+	if submit:
+		stock_entry.submit()
 	
 	frappe.msgprint(_(f"Stock Entry: <b>{stock_entry.name}</b> created successfully"), alert=True)
 
