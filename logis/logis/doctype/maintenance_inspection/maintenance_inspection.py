@@ -1,4 +1,9 @@
-# Copyright (c) 2025, AV Dev and contributors
+# Copyright (c) 2025, elius mgani and contributors
 # For license information, please see license.txt
 
-# Child DocType - No custom logic needed
+# import frappe
+from frappe.model.document import Document
+
+
+class MaintenanceInspection(Document):
+	pass

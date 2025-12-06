@@ -2,7 +2,8 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:inspection_name",
- "creation": "2025-11-29 09:20:33.432088",
+ "creation": "2025-12-06 08:51:33.627227",
+ "default_view": "List",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -14,7 +15,6 @@
    "fieldname": "inspection_name",
    "fieldtype": "Data",
    "label": "Inspection Name",
-   "search_index": 1,
    "unique": 1
   },
   {
@@ -26,7 +26,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-29 09:21:40.957617",
+ "modified": "2025-12-06 08:51:33.627227",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Maintenance Inspection",
@@ -46,6 +46,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
