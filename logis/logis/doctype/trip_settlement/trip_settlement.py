@@ -114,9 +114,9 @@ class TripSettlement(Document):
 			"item_code": trip_assignment.fuel_type,
 			"qty": self.fuel_consumed,
 			"s_warehouse": settings_doc.work_warehouse,
-			"truck": self.truck,
-			"trailer": self.trailer,
-			"truck_entry": self.truck_entry
+			"from_truck": self.truck,
+			"from_trailer": self.trailer,
+			"from_truck_entry": self.truck_entry
 		}]
 		
 		stock_entry = create_stock_entry(
