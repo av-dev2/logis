@@ -3,109 +3,105 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.client import get_value
+from logis.utils import create_stock_entry as create_material_transfer
 
 
 class MaintenanceRequest(Document):
 	"""Maintenance Request for Truck/Trailer maintenance tracking"""
 
-	def validate(self):
-		"""Validate document before saving"""
-		self.validate_vehicle_details()
-		self.validate_inspections()
-		self.validate_spares()
+	def before_save(self):
+		"""Actions before saving the document"""
+
+		self.set_status("Pending")
+
+	def before_submit(self):
+		"""Actions before document submission"""
+
+		self.validate_vehicle()
+		self.validate_spare_required()
+		self.validate_spare_request()
 
 	def on_submit(self):
 		"""Actions on document submission"""
-		self.create_material_request()
-		self.set_status("Planned")
+
+		self.set_status("In Progress")
 
 	def on_cancel(self):
 		"""Actions on document cancellation"""
+
 		self.set_status("Cancelled")
-		# Cancel linked Material Request if exists
-		if self.material_request:
-			mr = frappe.get_doc("Material Request", self.material_request)
-			if mr.docstatus == 0:
-				mr.delete()
-
-	def validate_vehicle_details(self):
-		"""Validate and auto-fill vehicle details"""
-		if self.vehicle_type and self.vehicle:
-			vehicle_doc = frappe.get_doc(self.vehicle_type, self.vehicle)
-			self.license_plate = vehicle_doc.license_plate
-			self.make = vehicle_doc.make
-			self.model = vehicle_doc.model
-		elif not self.vehicle:
-			frappe.throw("Vehicle is required")
-
-	def validate_inspections(self):
-		"""Ensure inspection count matches table entries"""
-		if not self.inspections:
-			self.inspections = []
-		
-		# Create inspection rows if count is set but rows are missing
-		if self.no_of_inspections > len(self.inspections):
-			for i in range(len(self.inspections), self.no_of_inspections):
-				self.append("inspections", {
-					"inspection_no": i + 1,
-					"status": "Pending"
-				})
-
-	def validate_spares(self):
-		"""Calculate spare costs"""
-		if self.spares:
-			for spare in self.spares:
-				if spare.unit_cost and spare.quantity_required:
-					spare.total_cost = spare.quantity_required * spare.unit_cost
-
-	def create_material_request(self):
-		"""Create Material Request for spare parts"""
-		if not self.spares or len(self.spares) == 0:
-			return
-
-		# Create Material Request
-		mr = frappe.new_doc("Material Request")
-		mr.material_request_type = "Material Transfer"
-		mr.purpose = "Material Transfer"
-		mr.set_warehouse = frappe.get_value("Logistic Settings", None, "default_store_warehouse") or "Main Store - LOGIS"
-		mr.schedule_date = frappe.utils.today()
-
-		for spare in self.spares:
-			mr.append("items", {
-				"item_code": spare.item_code,
-				"item_name": spare.item_name,
-				"qty": spare.quantity_required,
-				"warehouse": mr.set_warehouse,
-				"description": f"Maintenance Request: {self.name}"
-			})
-
-		mr.insert(ignore_permissions=True)
-		mr.submit()
-
-		self.material_request = mr.name
-		self.db_set("material_request", mr.name)
 
 	def set_status(self, status):
 		"""Update status"""
+
 		self.status = status
 		self.db_set("status", status)
+	
+	def validate_vehicle(self):
+		"""Validate that at least truck or trailer is selected"""
 
-	def on_update_after_submit(self):
-		"""Allow updates after submission"""
-		pass
-
+		if not self.truck and not self.trailer:
+			frappe.throw("Please select at least a Truck or a Trailer for maintenance request.")
+	
 	@frappe.whitelist()
-	def populate_maintenance_template(self):
-		"""Populate inspection steps from maintenance template"""
-		if not self.maintenance_template:
-			return
+	def create_stock_entry(self):
+		"""Create Material Request for spare parts"""
+		if not self.spares or len(self.spares) == 0:
+			frappe.throw("No spare parts added to create Stock Entry.")
 
-		template = frappe.get_doc("Maintenance Template", self.maintenance_template)
+		# Prepare items for stock entry
+		items = []
+		settings_doc = frappe.get_cached_doc("Logistic Settings", "Logistic Settings")
+		for spare in self.spares:
+			if not spare.spare:
+				frappe.throw("Spare part item code is required.")
+			
+			if spare.qty <= 0:
+				frappe.throw(f"Quantity for spare part {spare.spare} must be greater than 0.")
+			
+			new_row = {
+				"item_code": spare.spare,
+				"qty": spare.qty,
+				"s_warehouse": settings_doc.main_warehouse,
+				"t_warehouse": settings_doc.work_warehouse,
+			}
+
+			if self.truck:
+				new_row["to_truck"] = self.truck
+			
+			if self.trailer:
+				new_row["to_trailer"] = self.trailer
+
+			items.append(new_row)
+
+		# Create Stock Entry
+		stock_entry = create_material_transfer(
+			"Material Transfer",
+			items,
+			self,
+			submit=False
+		)
 		
-		# Auto-fill problem category from template
-		self.problem_category = template.problem_category
+		self.db_set("stock_entry", stock_entry, update_modified=False)
+
+		return stock_entry
+
+	def validate_spare_required(self):
+		"""Validate spare parts details"""
+
+		if self.no_spare_required == 1:
+			self.spares = []
+			return
 		
-		# Populate problem description from template
-		if template.description:
-			self.problem_description = template.description
+		if len(self.spares) == 0:
+			frappe.throw("Please add at least one spare part or select 'No Spare Required'.")
+
+	def validate_spare_request(self):
+		"""Validate that at least one spare part is requested"""
+
+		if not self.stock_entry:
+			return
+		
+		stock_entry_doc = frappe.get_doc("Stock Entry", self.stock_entry)
+		if stock_entry_doc.docstatus != 1:
+			frappe.throw("The requested spare parts have not been approved. Please inform the store manager.")
