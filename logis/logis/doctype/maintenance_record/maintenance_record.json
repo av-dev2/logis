@@ -1,0 +1,219 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:naming_series",
+ "creation": "2025-12-06 09:17:04.750263",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_jgzx",
+  "truck",
+  "trailer",
+  "column_break_zspi",
+  "company",
+  "posting_date",
+  "date_requested",
+  "section_break_klfi",
+  "maintenance_requests",
+  "battery_condition_column",
+  "excellent",
+  "good",
+  "poor",
+  "section_break_srmb",
+  "faults",
+  "section_break_udhk",
+  "maintenance_report",
+  "tab_break_khhp",
+  "spares",
+  "section_break_hdeh",
+  "material_issue",
+  "amended_from",
+  "column_break_rqkv",
+  "material_transfer",
+  "naming_series"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_jgzx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Maintenance Record",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "truck",
+   "fieldtype": "Link",
+   "label": "Truck",
+   "options": "Truck",
+   "search_index": 1
+  },
+  {
+   "fieldname": "trailer",
+   "fieldtype": "Link",
+   "label": "Trailer",
+   "options": "Trailer"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "search_index": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_zspi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_klfi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "maintenance_requests",
+   "fieldtype": "Table MultiSelect",
+   "label": "Maintenance request(s)",
+   "options": "Maintenance Record Detail",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_srmb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "faults",
+   "fieldtype": "Table",
+   "label": "Faults",
+   "options": "Maintenance Record Fault"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_udhk",
+   "fieldtype": "Section Break",
+   "label": "Maintance Summary"
+  },
+  {
+   "fieldname": "maintenance_report",
+   "fieldtype": "Text Editor",
+   "label": "Maintenance Report"
+  },
+  {
+   "fieldname": "tab_break_khhp",
+   "fieldtype": "Tab Break",
+   "label": "Spare Parts"
+  },
+  {
+   "fieldname": "spares",
+   "fieldtype": "Table",
+   "label": "Spares",
+   "no_copy": 1,
+   "options": "Maintenance Record Spare"
+  },
+  {
+   "fieldname": "section_break_hdeh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "material_issue",
+   "fieldtype": "Link",
+   "label": "Stock Entry(Material Issue)",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_rqkv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "material_transfer",
+   "fieldtype": "Link",
+   "label": "Stock Entry(Material Transfer)",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "battery_condition_column",
+   "fieldtype": "Column Break",
+   "label": "Battery Condition"
+  },
+  {
+   "default": "0",
+   "fieldname": "excellent",
+   "fieldtype": "Check",
+   "label": "Excellent"
+  },
+  {
+   "default": "0",
+   "fieldname": "good",
+   "fieldtype": "Check",
+   "label": "Good"
+  },
+  {
+   "default": "0",
+   "fieldname": "poor",
+   "fieldtype": "Check",
+   "label": "Poor"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "HQ-MRD-.YYYY.-.#####"
+  },
+  {
+   "description": "when maintanance was requested",
+   "fieldname": "date_requested",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date Requested",
+   "reqd": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-12-06 10:09:43.432063",
+ "modified_by": "Administrator",
+ "module": "Logis",
+ "name": "Maintenance Record",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
