@@ -11,9 +11,9 @@
   "truck",
   "trailer",
   "column_break_pgmi",
-  "company",
-  "posting_date",
   "status",
+  "posting_date",
+  "company",
   "section_break_ltqc",
   "complain_details_column",
   "complains",
@@ -26,19 +26,24 @@
   "inspectionsdiagnosis_section",
   "inspections",
   "section_break_pgmj",
-  "naming_series",
+  "stock_entry",
   "column_break_dhlz",
+  "naming_series",
   "amended_from",
   "tab_break_vdpv",
+  "no_spare_required",
+  "column_break_maxo",
+  "request_spares",
+  "section_break_pevx",
   "spares"
  ],
  "fields": [
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "Naming Series",
-   "options": "HQ-MR-.YYYY.-.#####",
+   "options": "HQ-MRT-.YYYY.-.#####",
+   "search_index": 1,
    "set_only_once": 1
   },
   {
@@ -164,23 +169,55 @@
    "label": "Spares"
   },
   {
+   "depends_on": "eval: doc.no_spare_required == 0",
    "fieldname": "spares",
    "fieldtype": "Table",
    "label": "Spares",
+   "no_copy": 1,
    "options": "Maintenance Spare Detail"
   },
   {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Pending\nIn Progress\nCompleted",
+   "options": "Pending\nIn Progress\nCompleted\nCancelled",
+   "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "depends_on": "eval: doc.no_spare_required == 0",
+   "fieldname": "request_spares",
+   "fieldtype": "Button",
+   "label": "Request Spares"
+  },
+  {
+   "default": "0",
+   "fieldname": "no_spare_required",
+   "fieldtype": "Check",
+   "label": "No spare required",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_maxo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_pevx",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-29 13:28:09.339089",
+ "modified": "2025-12-06 09:40:24.259047",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Maintenance Request",
