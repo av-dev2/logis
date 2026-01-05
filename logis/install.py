@@ -8,6 +8,7 @@ def after_install():
     create_item_group()
     create_inventory_dimensions()
     create_accounting_dimensions()
+    create_maintenance_fault_types()
 
 
 def create_item_group():
@@ -99,3 +100,236 @@ def create_accounting_dimensions():
                 frappe.logger().error(f"Error creating Accounting Dimension for '{document_type}': {str(e)}")
                 frappe.log_error(title=f"Error creating Accounting Dimension for '{document_type}'", message=frappe.get_traceback())
                 frappe.db.rollback()
+
+
+def create_maintenance_fault_types():
+    """
+    Create default Maintenance Fault Types for trucks and trailers.
+    Auto-populates common fault types that require maintenance.
+    """
+
+    fault_types = [
+        # Engine & Powertrain Faults
+        "Engine Overheating",
+        "Engine Oil Leak",
+        "Engine Misfire",
+        "Engine Stalling",
+        "Turbocharger Failure",
+        "Fuel Injection System Fault",
+        "Fuel Pump Failure",
+        "Fuel Filter Clogged",
+        "Exhaust System Leak",
+        "Diesel Particulate Filter (DPF) Blockage",
+        "EGR Valve Malfunction",
+        "Coolant Leak",
+        "Radiator Damage",
+        "Water Pump Failure",
+        "Alternator Failure",
+        "Starter Motor Failure",
+        "Battery Failure",
+        "Timing Belt/Chain Wear",
+        "Transmission Slipping",
+        "Transmission Fluid Leak",
+        "Clutch Wear",
+        "Clutch Slipping",
+        "Gearbox Noise",
+        "Differential Fault",
+        "Driveshaft Vibration",
+        "U-Joint Failure",
+        "PTO (Power Take-Off) Malfunction",
+
+        # Brake System Faults
+        "Brake Pad Wear",
+        "Brake Disc/Rotor Wear",
+        "Brake Drum Wear",
+        "Brake Fluid Leak",
+        "Air Brake System Leak",
+        "Brake Line Damage",
+        "ABS Sensor Fault",
+        "ABS Module Failure",
+        "Brake Caliper Sticking",
+        "Brake Chamber Failure",
+        "Slack Adjuster Fault",
+        "Parking Brake Malfunction",
+        "Brake Booster Failure",
+        "Low Brake Air Pressure",
+
+        # Suspension & Steering Faults
+        "Shock Absorber Worn",
+        "Leaf Spring Crack",
+        "Air Suspension Leak",
+        "Air Bag Suspension Failure",
+        "Steering Fluid Leak",
+        "Power Steering Pump Failure",
+        "Steering Rack Damage",
+        "Steering Column Issue",
+        "Tie Rod End Wear",
+        "Ball Joint Wear",
+        "King Pin Wear",
+        "Wheel Bearing Failure",
+        "Hub Assembly Damage",
+        "Axle Seal Leak",
+        "Axle Damage",
+        "Fifth Wheel Coupling Wear",
+        "Fifth Wheel Lock Mechanism Fault",
+
+        # Tire & Wheel Faults
+        "Tire Puncture",
+        "Tire Sidewall Damage",
+        "Tire Tread Wear",
+        "Tire Blowout",
+        "Wheel Rim Crack",
+        "Wheel Rim Bent",
+        "Wheel Nut/Bolt Missing",
+        "Wheel Alignment Issue",
+        "Tire Pressure Monitoring System Fault",
+        "Spare Tire Missing/Damaged",
+
+        # Electrical System Faults
+        "Wiring Harness Damage",
+        "Fuse Box Failure",
+        "ECU/ECM Malfunction",
+        "Sensor Failure",
+        "Headlight Failure",
+        "Tail Light Failure",
+        "Brake Light Failure",
+        "Turn Signal Failure",
+        "Marker Light Failure",
+        "Reverse Light Failure",
+        "Clearance Light Failure",
+        "Interior Light Failure",
+        "Horn Malfunction",
+        "Electrical Short Circuit",
+        "Ground Wire Fault",
+        "Trailer Electrical Connector Fault",
+        "7-Pin/15-Pin Connector Damage",
+
+        # Body & Structural Faults
+        "Cab Corrosion",
+        "Body Panel Damage",
+        "Chassis Crack",
+        "Frame Rail Damage",
+        "Cross Member Damage",
+        "Door Hinge Worn",
+        "Door Lock Malfunction",
+        "Window Mechanism Failure",
+        "Mirror Damage",
+        "Windshield Crack",
+        "Windshield Wiper Failure",
+        "Washer Fluid System Fault",
+        "Step/Ladder Damage",
+        "Fuel Tank Damage",
+        "Fuel Tank Strap Failure",
+        "Mudguard/Fender Damage",
+        "Splash Guard Missing",
+
+        # Trailer-Specific Faults
+        "Trailer Floor Damage",
+        "Trailer Wall Damage",
+        "Trailer Roof Leak",
+        "Trailer Door Seal Damage",
+        "Trailer Door Hinge Failure",
+        "Trailer Door Lock Malfunction",
+        "Trailer Curtain Tear",
+        "Trailer Tarpaulin Damage",
+        "Landing Gear Malfunction",
+        "Landing Gear Crank Handle Missing",
+        "Kingpin Wear",
+        "Kingpin Damage",
+        "Coupling Device Wear",
+        "Dolly Leg Failure",
+        "Twist Lock Failure",
+        "Container Lock Failure",
+        "Refrigeration Unit Failure",
+        "Reefer Temperature Control Fault",
+        "Reefer Compressor Failure",
+        "Insulation Damage (Reefer)",
+        "Tanker Valve Leak",
+        "Tanker Seal Damage",
+        "Bulk Discharge System Fault",
+
+        # Safety Equipment Faults
+        "Fire Extinguisher Expired",
+        "First Aid Kit Missing",
+        "Reflective Triangle Missing",
+        "Safety Cone Missing",
+        "Wheel Chock Missing",
+        "Seat Belt Malfunction",
+        "Emergency Exit Blocked",
+        "Reverse Alarm Failure",
+        "Side Underrun Protection Damage",
+        "Rear Underrun Protection Damage",
+        "Reflector Missing/Damaged",
+
+        # HVAC & Comfort Faults
+        "Air Conditioning Failure",
+        "Heater Failure",
+        "Blower Motor Failure",
+        "HVAC Control Panel Fault",
+        "Cabin Air Filter Clogged",
+        "AC Refrigerant Leak",
+        "Defrost System Failure",
+
+        # Hydraulic System Faults
+        "Hydraulic Fluid Leak",
+        "Hydraulic Pump Failure",
+        "Hydraulic Cylinder Failure",
+        "Hydraulic Hose Damage",
+        "Hydraulic Valve Malfunction",
+        "Tipper/Dump Body Hydraulic Fault",
+        "Tail Lift Hydraulic Failure",
+
+        # Air System Faults
+        "Air Compressor Failure",
+        "Air Dryer Malfunction",
+        "Air Tank Leak",
+        "Air Line Damage",
+        "Air Pressure Regulator Fault",
+        "Governor Valve Failure",
+        "Check Valve Failure",
+
+        # Telematics & Electronics Faults
+        "GPS/Tracking System Failure",
+        "Telematics Unit Malfunction",
+        "Dashboard Display Fault",
+        "Speedometer Malfunction",
+        "Tachometer Fault",
+        "Odometer Fault",
+        "Fuel Gauge Malfunction",
+        "Temperature Gauge Fault",
+        "Oil Pressure Gauge Fault",
+        "Check Engine Light On",
+        "Warning Light Malfunction",
+
+        # Miscellaneous Faults
+        "Rust/Corrosion",
+        "Paint Damage",
+        "Decal/Marking Faded",
+        "License Plate Light Failure",
+        "Registration Plate Holder Damage",
+        "Toolbox Lock Failure",
+        "Catwalk Damage",
+        "Ladder Rung Missing",
+        "Grab Handle Loose",
+        "Air Horn Failure",
+        "CB Radio Malfunction",
+        "Camera System Failure",
+        "Parking Sensor Fault",
+        "Load Securement Equipment Missing",
+        "Tarp System Malfunction",
+        "Side Door Roller Fault",
+        "Rear Door Roller Fault",
+    ]
+
+    for fault in fault_types:
+        if not frappe.db.exists("Maintenance Fault Type", fault):
+            try:
+                doc = frappe.get_doc({
+                    "doctype": "Maintenance Fault Type",
+                    "fault_type": fault
+                })
+                doc.insert(ignore_permissions=True)
+            except Exception as e:
+                frappe.log_error(title=f"Maintenance Fault Type: '{fault}'", message=frappe.get_traceback())
+
+    frappe.db.commit()
