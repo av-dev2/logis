@@ -148,7 +148,7 @@ class MaintenanceRecord(Document):
 			if not spare.spare:
 				frappe.throw("Spare part item code is required.")
 			
-			if spare.qty != 0:
+			if spare.quantity_used == 0:
 				continue
 
 			new_item = {
