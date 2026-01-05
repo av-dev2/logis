@@ -15,6 +15,15 @@ def create_item_group():
     """
     Create Item Group record called 'Fuel' if it doesn't exist.
     """
+    if not frappe.db.exists("Item Group", "All Item Groups"):
+        all_item_groups = frappe.get_doc({
+            "doctype": "Item Group",
+            "item_group_name": "All Item Groups",
+            "is_group": 1
+        })
+        all_item_groups.insert(ignore_permissions=True)
+        frappe.db.commit()
+    
     if not frappe.db.exists("Item Group", "Fuel"):
         item_group = frappe.get_doc({
             "doctype": "Item Group",
