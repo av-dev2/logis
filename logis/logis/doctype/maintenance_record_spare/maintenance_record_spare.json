@@ -9,9 +9,10 @@
  "field_order": [
   "spare",
   "uom",
-  "quantity_requested",
-  "quantity_used",
-  "qty"
+  "qty_requested",
+  "qty_provided",
+  "qty_used",
+  "remained_qty"
  ],
  "fields": [
   {
@@ -32,29 +33,38 @@
    "search_index": 1
   },
   {
-   "fieldname": "qty",
+   "fieldname": "qty_requested",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty Requested",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "qty_provided",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty Provided",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "qty_used",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty Used",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "remained_qty",
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Remained Qty",
    "non_negative": 1,
    "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "quantity_requested",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Quantity Requested",
-   "non_negative": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "quantity_used",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Quantity Used",
-   "non_negative": 1,
    "search_index": 1
   }
  ],
@@ -62,7 +72,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-12-06 09:22:31.130003",
+ "modified": "2026-01-10 10:10:25.260177",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Maintenance Record Spare",
