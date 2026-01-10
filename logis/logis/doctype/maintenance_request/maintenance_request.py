@@ -13,6 +13,46 @@ class MaintenanceRequest(Document):
 		"""Actions before saving the document"""
 
 		self.set_status("Pending")
+		self.validate_duplicate_spares()
+
+	def validate_duplicate_spares(self):
+		"""Validate that there are no duplicate spare parts in the spares child table.
+		If duplicates are found, throw an error suggesting to merge quantities."""
+
+		if not self.spares:
+			return
+
+		spare_counts = {}
+		for row in self.spares:
+			if not row.spare:
+				continue
+			
+			if row.spare in spare_counts:
+				spare_counts[row.spare]["count"] += 1
+				spare_counts[row.spare]["total_qty"] += row.qty_requested or 0
+			else:
+				spare_counts[row.spare] = {
+					"count": 1,
+					"total_qty": row.qty_requested or 0
+				}
+
+		# Find duplicates
+		duplicates = {spare: info for spare, info in spare_counts.items() if info["count"] > 1}
+
+		if duplicates:
+			duplicate_messages = []
+			for spare, info in duplicates.items():
+				duplicate_messages.append(
+					f"<b>{spare}</b> appears {info['count']} times. "
+					f"Please merge into one row with total quantity: {info['total_qty']}"
+				)
+			
+			frappe.throw(
+				"Duplicate spare parts found in the Spares table:<br><br>" + 
+				"<br>".join(duplicate_messages) +
+				"<br><br>Please remove duplicates and merge the quantities into a single row.",
+				title="Duplicate Spares Not Allowed"
+			)
 
 	def before_submit(self):
 		"""Actions before document submission"""
@@ -56,12 +96,12 @@ class MaintenanceRequest(Document):
 			if not spare.spare:
 				frappe.throw("Spare part item code is required.")
 			
-			if spare.qty <= 0:
+			if spare.qty_requested <= 0:
 				frappe.throw(f"Quantity for spare part {spare.spare} must be greater than 0.")
 			
 			new_row = {
 				"item_code": spare.spare,
-				"qty": spare.qty,
+				"qty": spare.qty_requested,
 				"s_warehouse": settings_doc.main_warehouse,
 				"t_warehouse": settings_doc.work_warehouse,
 			}
