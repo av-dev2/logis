@@ -12,8 +12,9 @@
   "trailer",
   "column_break_pgmi",
   "status",
-  "posting_date",
+  "column_break_qkth",
   "company",
+  "posting_date",
   "section_break_ltqc",
   "complain_details_column",
   "complains",
@@ -212,12 +213,16 @@
   {
    "fieldname": "section_break_pevx",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_qkth",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-06 09:40:24.259047",
+ "modified": "2026-01-10 09:34:01.380255",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Maintenance Request",
