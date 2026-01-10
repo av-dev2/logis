@@ -17,6 +17,7 @@ class MaintenanceRecord(Document):
 		"""Actions before saving the document"""
 
 		self.validate_vehicle()
+		self.set_remained_qty()
 	
 	def before_submit(self):
 		"""Actions before document submission"""
@@ -52,7 +53,25 @@ class MaintenanceRecord(Document):
 
 		if not self.truck and not self.trailer:
 			frappe.throw("Please select at least a Truck or a Trailer for maintenance record.")
-	
+
+	def set_remained_qty(self):
+		"""Calculate remained_qty for each spare and validate qty_used"""
+
+		if not self.spares:
+			return
+
+		for row in self.spares:
+			qty_provided = row.qty_provided or 0
+			qty_used = row.qty_used or 0
+
+			if qty_used > qty_provided:
+				frappe.throw(
+					f"Row {row.idx}: Qty Used ({qty_used}) cannot be greater than Qty Provided ({qty_provided}) for spare <b>{row.spare}</b>.",
+					title="Invalid Quantity"
+				)
+
+			row.remained_qty = qty_provided - qty_used
+
 	def get_spares(self):
 		"""Get all spare parts from linked maintenance requests"""
 
@@ -86,9 +105,10 @@ class MaintenanceRecord(Document):
 			for d in record_doc.spares:
 				new_spare = self.append("spares")
 				new_spare.spare = d.spare
-				new_spare.quantity_requested = d.qty
-				new_spare.quantity_used = 0
-				new_spare.qty = d.qty
+				new_spare.qty_requested = d.qty_requested
+				new_spare.qty_provided = d.qty_provided
+				new_spare.qty_used = 0
+				new_spare.remained_qty = d.remained_qty
 		
 		
 	@frappe.whitelist()
@@ -105,12 +125,12 @@ class MaintenanceRecord(Document):
 			if not spare.spare:
 				frappe.throw("Spare part item code is required.")
 			
-			if spare.qty <= 0:
+			if spare.remained_qty <= 0:
 				continue
 
 			new_item = {
 				"item_code": spare.spare,
-				"qty": spare.qty,
+				"qty": spare.remained_qty,
 				"s_warehouse": settings_doc.work_warehouse,
 				"t_warehouse": settings_doc.main_warehouse,
 			}
@@ -148,12 +168,12 @@ class MaintenanceRecord(Document):
 			if not spare.spare:
 				frappe.throw("Spare part item code is required.")
 			
-			if spare.quantity_used == 0:
+			if spare.qty_used == 0:
 				continue
 
 			new_item = {
 				"item_code": spare.spare,
-				"qty": spare.quantity_used,
+				"qty": spare.qty_used,
 				"s_warehouse": settings_doc.work_warehouse,
 			}
 			if self.truck:
