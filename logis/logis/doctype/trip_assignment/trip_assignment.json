@@ -24,13 +24,16 @@
   "previous_remained_fuel",
   "column_break_psva",
   "fuel_per_trip",
-  "requested_fuel",
+  "todays_requested_fuel",
+  "column_break_uoti",
+  "require_reserve_fuel",
+  "reserve_fuel",
   "expenses_section",
   "expenses",
+  "section_break_ixra",
+  "total_expense",
   "column_break_ckgx",
   "total_fuel",
-  "total_expense",
-  "supplier",
   "references_section",
   "truck_entry",
   "naming_series",
@@ -38,7 +41,7 @@
   "stock_entry",
   "amended_from",
   "column_break_piju",
-  "journal_entry",
+  "settled",
   "purchase_invoice"
  ],
  "fields": [
@@ -130,6 +133,7 @@
    "fieldname": "previous_issued_fuel",
    "fieldtype": "Float",
    "label": "Previous Issued Fuel",
+   "non_negative": 1,
    "read_only": 1,
    "search_index": 1
   },
@@ -158,13 +162,6 @@
   {
    "fieldname": "column_break_psva",
    "fieldtype": "Column Break"
-  },
-  {
-   "description": "In Litre",
-   "fieldname": "requested_fuel",
-   "fieldtype": "Float",
-   "label": "Requested Fuel",
-   "read_only": 1
   },
   {
    "bold": 1,
@@ -211,15 +208,8 @@
    "fieldname": "stock_entry",
    "fieldtype": "Link",
    "label": "Stock Entry",
+   "no_copy": 1,
    "options": "Stock Entry",
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "journal_entry",
-   "fieldtype": "Link",
-   "label": "Journal Entry",
-   "options": "Journal Entry",
    "read_only": 1,
    "search_index": 1
   },
@@ -228,6 +218,7 @@
    "fieldname": "previous_remained_fuel",
    "fieldtype": "Float",
    "label": "Previous Remained Fuel",
+   "non_negative": 1,
    "read_only": 1,
    "search_index": 1
   },
@@ -256,8 +247,8 @@
    "fieldname": "truck_entry",
    "fieldtype": "Link",
    "label": "Truck Entry",
+   "no_copy": 1,
    "options": "Truck Entry",
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -265,17 +256,50 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier",
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Small Text",
+   "label": "Purchase Invoice",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_uoti",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "require_reserve_fuel",
+   "fieldtype": "Check",
+   "label": "Require Reserve Fuel",
    "search_index": 1
   },
   {
-   "fieldname": "purchase_invoice",
-   "fieldtype": "Link",
-   "label": "Purchase Invoice",
-   "options": "Purchase Invoice",
+   "depends_on": "eval: doc.require_reserve_fuel",
+   "fieldname": "reserve_fuel",
+   "fieldtype": "Float",
+   "label": "Reserve Fuel",
+   "mandatory_depends_on": "eval: doc.require_reserve_fuel",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "todays_requested_fuel",
+   "fieldtype": "Float",
+   "label": "Today's Requested Fuel",
+   "non_negative": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_ixra",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "settled",
+   "fieldtype": "Check",
+   "label": "Settled",
+   "no_copy": 1,
    "read_only": 1,
    "search_index": 1
   }
@@ -284,7 +308,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-22 08:07:35.886238",
+ "modified": "2026-01-10 09:27:44.140314",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Trip Assignment",
