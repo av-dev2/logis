@@ -412,3 +412,57 @@ def create_purchase_invoice(source_doc):
 	
 	return created_invoices
 
+
+def update_maintenance_request_qty_provided(doc, method):
+	"""
+	Update qty_provided in Maintenance Request child table based on Stock Entry submission.
+	
+	Called from Stock Entry on_submit event for Material Transfer purpose.
+	Finds the Maintenance Request that references this Stock Entry and updates
+	the qty_provided field in the 'Maintenance Spare Detail' child table.
+	
+	Args:
+		doc (Document): Stock Entry document
+		method (str): Event method name (on_submit)
+	"""
+	
+	# Only process Material Transfer stock entries
+	if doc.purpose != "Material Transfer":
+		return
+	
+	# Find Maintenance Request that references this Stock Entry
+	maintenance_request = frappe.db.get_value(
+		"Maintenance Request",
+		{"stock_entry": doc.name, "docstatus": ["!=", 2]},
+		"name"
+	)
+	
+	if not maintenance_request:
+		# No Maintenance Request found referencing this Stock Entry, do nothing
+		return
+	
+	# Get Maintenance Request document
+	mr_doc = frappe.get_doc("Maintenance Request", maintenance_request)
+	
+	# Build a dictionary of items and quantities from Stock Entry
+	stock_entry_items = {}
+	for item in doc.items:
+		item_code = item.item_code
+		qty = item.qty or 0
+		
+		if item_code in stock_entry_items:
+			stock_entry_items[item_code] += qty
+		else:
+			stock_entry_items[item_code] = qty
+	
+	# Update qty_provided in the spares child table
+	for spare in mr_doc.spares:
+		if spare.spare in stock_entry_items:
+			# Update qty_provided with the quantity from Stock Entry
+			frappe.db.set_value(
+				"Maintenance Spare Detail",
+				spare.name,
+				"qty_provided",
+				stock_entry_items[spare.spare]
+			)
+	

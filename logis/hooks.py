@@ -147,13 +147,11 @@ after_install = "logis.install.after_install"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Stock Entry": {
+		"on_submit": "logis.utils.update_maintenance_request_qty_provided",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
