@@ -11,6 +11,7 @@
   "trailer",
   "column_break_zspi",
   "company",
+  "column_break_wffr",
   "posting_date",
   "date_requested",
   "section_break_klfi",
@@ -183,13 +184,17 @@
    "label": "Date Requested",
    "reqd": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "column_break_wffr",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-06 10:09:43.432063",
+ "modified": "2026-01-10 09:37:17.013353",
  "modified_by": "Administrator",
  "module": "Logis",
  "name": "Maintenance Record",
