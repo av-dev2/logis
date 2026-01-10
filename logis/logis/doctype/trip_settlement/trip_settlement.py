@@ -52,7 +52,12 @@ class TripSettlement(Document):
 	
 	def on_submit(self):
 		"""Called when document is submitted."""
-		pass
+		frappe.db.set_value(
+			"Trip Assignment",
+			self.trip_assignment,
+			"settled",
+			1
+		)
 	
 	def on_cancel(self):
 		"""Called when document is cancelled."""
