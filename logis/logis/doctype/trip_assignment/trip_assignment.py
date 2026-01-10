@@ -26,8 +26,8 @@ class TripAssignment(Document):
 	def set_total_fuel(self):
 		requested_fuel = ((self.fuel_per_trip or 0) * (self.expected_trips or 0)) - (self.previous_remained_fuel or 0)
 		
-		self.requested_fuel = requested_fuel
-		self.total_fuel = (self.previous_remained_fuel or 0) + (self.requested_fuel or 0)
+		self.todays_requested_fuel = requested_fuel
+		self.total_fuel = (self.previous_remained_fuel or 0) + (self.todays_requested_fuel or 0) + (self.reserve_fuel or 0)
 
 	def set_total_expense(self):
 		total = 0
@@ -78,17 +78,17 @@ class TripAssignment(Document):
 		"""
 		Create Stock Entry for fuel material transfer from Store to Work in Progress.
 		"""
-		if not self.fuel_type or not self.requested_fuel:
+		if not self.fuel_type or not self.total_fuel:
 			frappe.throw(_("Fuel Type and Requested Fuel are required to create stock entry"))
 		
-		if self.requested_fuel <= 0:
+		if self.total_fuel <= 0:
 			frappe.throw(_("Requested Fuel must be greater than 0"))
 		
 		# Prepare items for stock entry
 		settings_doc = frappe.get_cached_doc("Logistic Settings", "Logistic Settings")
 		items = [{
 			"item_code": self.fuel_type,
-			"qty": self.requested_fuel,
+			"qty": self.total_fuel,
 			"s_warehouse": settings_doc.main_warehouse,
 			"t_warehouse": settings_doc.work_warehouse,
 			"to_truck": self.truck,
@@ -113,7 +113,7 @@ class TripAssignment(Document):
 		
 		purchase_invoice = create_purchase_invoice(source_doc=self)
 		
-		self.db_set("purchase_invoice", purchase_invoice, update_modified=False)
+		self.db_set("purchase_invoice", ", ".join(purchase_invoice), update_modified=False)
 
 	def create_expense_journal_entry(self):
 		"""
