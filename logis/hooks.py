@@ -8,7 +8,7 @@ app_license = "mit"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -47,7 +47,7 @@ app_license = "mit"
 
 doctype_list_js = {
 	"Custom Field": "logis/patches/custom_fields/custom_field.js",
-	"Property Setter": "logis/patches/propert_setters/property_setter.js",
+	"Property Setter": "logis/patches/property_setters/property_setter.js",
 }
 
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
