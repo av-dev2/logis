@@ -113,7 +113,7 @@
    "search_index": 1
   },
   {
-   "default": "now",
+   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,

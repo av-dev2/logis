@@ -86,14 +86,14 @@ class TripSettlement(Document):
 	def set_total_fuel_provided(self):
 		"""Set the total fuel provided for the trip settlement."""
 		self.no_of_trips = len(self.trips)
-		self.fuel_consumed = self.no_of_trips * self.fuel_per_each_trip
-		self.fuel_remained = self.fuel_provided - self.fuel_consumed
+		self.fuel_consumed = self.no_of_trips * (self.fuel_per_each_trip or 0)
+		self.fuel_remained = (self.fuel_provided or 0) - self.fuel_consumed
 
 	def set_total_income(self):
 		"""Set the total income for the trip settlement."""
 		total = 0
 		for row in self.trips:
-			total += row.amount
+			total += row.amount or 0
 
 		self.total_income = total
 
