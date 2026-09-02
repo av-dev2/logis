@@ -23,23 +23,25 @@ class IntegrationTestTripSettlement(IntegrationTestCase):
 	def setUp(self):
 		"""Set up test data before each test."""
 		pass
-	
+
 	def tearDown(self):
 		"""Clean up test data after each test."""
 		pass
-	
+
 	def test_trip_settlement_creation(self):
 		"""Test creating a new Trip Settlement."""
 		# Create test document
-		doc = frappe.get_doc({
-			"doctype": "Trip Settlement",
-			# Add required fields here
-		})
+		doc = frappe.get_doc(
+			{
+				"doctype": "Trip Settlement",
+				# Add required fields here
+			}
+		)
 		doc.insert()
-		
+
 		# Assertions
 		self.assertEqual(doc.doctype, "Trip Settlement")
 		self.assertIsNotNone(doc.name)
-		
+
 		# Clean up
 		doc.delete()

@@ -1,32 +1,36 @@
 // Copyright (c) 2025, AV Dev and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Maintenance Request', {
+frappe.ui.form.on("Maintenance Request", {
 	setup: (frm) => {
-		frm.trigger('set_query');
-		frm.trigger('validate_add_spare');
+		frm.trigger("set_query");
+		frm.trigger("validate_add_spare");
 	},
 
 	refresh: (frm) => {
-		frm.trigger('set_query');
-		frm.trigger('validate_add_spare');
+		frm.trigger("set_query");
+		frm.trigger("validate_add_spare");
 
 		// Show Stock Entry if created
 		if (frm.doc.stock_entry) {
-			frm.add_custom_button(__('View Stock Entry'), function() {
-				frappe.set_route('Form', 'Stock Entry', frm.doc.stock_entry);
-			}, __('View'));
+			frm.add_custom_button(
+				__("View Stock Entry"),
+				function () {
+					frappe.set_route("Form", "Stock Entry", frm.doc.stock_entry);
+				},
+				__("View")
+			);
 		}
 	},
 
 	onload: (frm) => {
-		frm.trigger('set_query');
-		frm.trigger('validate_add_spare');
+		frm.trigger("set_query");
+		frm.trigger("validate_add_spare");
 	},
-	
+
 	request_spares: (frm) => {
 		if (frm.doc.spares.length === 0) {
-			frappe.msgprint(__('Please add at least one spare part to request.'));
+			frappe.msgprint(__("Please add at least one spare part to request."));
 			return;
 		}
 
@@ -37,26 +41,26 @@ frappe.ui.form.on('Maintenance Request', {
 		}
 
 		frappe.call({
-			method: 'create_stock_entry',
+			method: "create_stock_entry",
 			doc: frm.doc,
 			freeze: true,
-			freeze_message: __('Creating Stock Entry...'),
+			freeze_message: __("Creating Stock Entry..."),
 			callback: (r) => {
 				if (r.message) {
 					frm.reload_doc();
-					frappe.msgprint(__('Stock Entry {0} created successfully.', [r.message]));
+					frappe.msgprint(__("Stock Entry {0} created successfully.", [r.message]));
 				} else {
-					frappe.msgprint(__('No spare parts were requested.'));
+					frappe.msgprint(__("No spare parts were requested."));
 				}
-			}
+			},
 		});
 	},
 	set_query: (frm) => {
-		frm.set_query('spare', 'spares', () => {
+		frm.set_query("spare", "spares", () => {
 			return {
 				filters: {
-					is_stock_item: 1
-				}
+					is_stock_item: 1,
+				},
 			};
 		});
 	},
@@ -71,7 +75,7 @@ frappe.ui.form.on('Maintenance Request', {
 });
 
 // Add auto-fetch for item details in spares table
-frappe.ui.form.on('Maintenance Spare Detail', {
+frappe.ui.form.on("Maintenance Spare Detail", {
 	form_render: (frm, cdt, cdn) => {
 		if (frm.doc.stock_entry) {
 			frm.fields_dict.spares.grid.wrapper.find(".grid-delete-row").hide();

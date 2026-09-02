@@ -10,15 +10,15 @@ frappe.ui.form.on("Truck", {
 			// Document exists
 		}
 	},
-	
+
 	validate(frm) {
 		// Called before document is saved (client-side validation)
 	},
-	
+
 	onload(frm) {
 		// Called when form is loaded
 	},
-	
+
 	// Field-specific events
 	// Example: fieldname: function(frm) { }
 });

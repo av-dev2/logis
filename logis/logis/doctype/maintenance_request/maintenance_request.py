@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+
 from logis.utils import create_stock_entry as create_material_transfer
 
 
@@ -26,15 +27,12 @@ class MaintenanceRequest(Document):
 		for row in self.spares:
 			if not row.spare:
 				continue
-			
+
 			if row.spare in spare_counts:
 				spare_counts[row.spare]["count"] += 1
 				spare_counts[row.spare]["total_qty"] += row.qty_requested or 0
 			else:
-				spare_counts[row.spare] = {
-					"count": 1,
-					"total_qty": row.qty_requested or 0
-				}
+				spare_counts[row.spare] = {"count": 1, "total_qty": row.qty_requested or 0}
 
 		# Find duplicates
 		duplicates = {spare: info for spare, info in spare_counts.items() if info["count"] > 1}
@@ -46,12 +44,12 @@ class MaintenanceRequest(Document):
 					f"<b>{spare}</b> appears {info['count']} times. "
 					f"Please merge into one row with total quantity: {info['total_qty']}"
 				)
-			
+
 			frappe.throw(
-				"Duplicate spare parts found in the Spares table:<br><br>" + 
-				"<br>".join(duplicate_messages) +
-				"<br><br>Please remove duplicates and merge the quantities into a single row.",
-				title="Duplicate Spares Not Allowed"
+				"Duplicate spare parts found in the Spares table:<br><br>"
+				+ "<br>".join(duplicate_messages)
+				+ "<br><br>Please remove duplicates and merge the quantities into a single row.",
+				title="Duplicate Spares Not Allowed",
 			)
 
 	def before_submit(self):
@@ -76,13 +74,13 @@ class MaintenanceRequest(Document):
 
 		self.status = status
 		self.db_set("status", status)
-	
+
 	def validate_vehicle(self):
 		"""Validate that at least truck or trailer is selected"""
 
 		if not self.truck and not self.trailer:
 			frappe.throw("Please select at least a Truck or a Trailer for maintenance request.")
-	
+
 	@frappe.whitelist()
 	def create_stock_entry(self):
 		"""Create Material Request for spare parts"""
@@ -95,10 +93,10 @@ class MaintenanceRequest(Document):
 		for spare in self.spares:
 			if not spare.spare:
 				frappe.throw("Spare part item code is required.")
-			
+
 			if spare.qty_requested <= 0:
 				frappe.throw(f"Quantity for spare part {spare.spare} must be greater than 0.")
-			
+
 			new_row = {
 				"item_code": spare.spare,
 				"qty": spare.qty_requested,
@@ -108,20 +106,15 @@ class MaintenanceRequest(Document):
 
 			if self.truck:
 				new_row["to_truck"] = self.truck
-			
+
 			if self.trailer:
 				new_row["to_trailer"] = self.trailer
 
 			items.append(new_row)
 
 		# Create Stock Entry
-		stock_entry = create_material_transfer(
-			"Material Transfer",
-			items,
-			self,
-			submit=False
-		)
-		
+		stock_entry = create_material_transfer("Material Transfer", items, self, submit=False)
+
 		self.db_set("stock_entry", stock_entry, update_modified=False)
 
 		return stock_entry
@@ -132,7 +125,7 @@ class MaintenanceRequest(Document):
 		if self.no_spare_required == 1:
 			self.spares = []
 			return
-		
+
 		if len(self.spares) == 0:
 			frappe.throw("Please add at least one spare part or select 'No Spare Required'.")
 
@@ -141,7 +134,7 @@ class MaintenanceRequest(Document):
 
 		if not self.stock_entry:
 			return
-		
+
 		stock_entry_doc = frappe.get_doc("Stock Entry", self.stock_entry)
 		if stock_entry_doc.docstatus != 1:
 			frappe.throw("The requested spare parts have not been approved. Please inform the store manager.")

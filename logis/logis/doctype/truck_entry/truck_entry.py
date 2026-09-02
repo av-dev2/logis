@@ -21,23 +21,23 @@ class TruckEntry(Document):
 	def validate(self):
 		"""Validate document before saving."""
 		pass
-	
+
 	def before_save(self):
 		"""Called before document is saved."""
 		pass
-	
+
 	def on_update(self):
 		"""Called after document is saved."""
 		pass
-	
+
 	def on_submit(self):
 		"""Called when document is submitted."""
 		pass
-	
+
 	def on_cancel(self):
 		"""Called when document is cancelled."""
 		pass
-	
+
 	def on_trash(self):
 		"""Called before document is deleted."""
 		pass

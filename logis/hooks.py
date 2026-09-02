@@ -46,8 +46,8 @@ app_license = "mit"
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 
 doctype_list_js = {
-    "Custom Field": "logis/patches/custom_fields/custom_field.js",
-    "Property Setter": "logis/patches/propert_setters/property_setter.js",
+	"Custom Field": "logis/patches/custom_fields/custom_field.js",
+	"Property Setter": "logis/patches/propert_setters/property_setter.js",
 }
 
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -88,8 +88,8 @@ doctype_list_js = {
 # ------------
 
 after_migrate = [
-    "logis.patches.custom_fields.create_custom_fields.execute",
-    "logis.patches.property_setters.create_property_setters.execute",
+	"logis.patches.custom_fields.create_custom_fields.execute",
+	"logis.patches.property_setters.create_property_setters.execute",
 ]
 
 # before_install = "logis.install.before_install"
@@ -249,4 +249,3 @@ doc_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-

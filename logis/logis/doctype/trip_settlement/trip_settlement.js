@@ -5,18 +5,18 @@ frappe.ui.form.on("Trip Settlement", {
 	refresh: (frm) => {
 		frm.trigger("set_query");
 	},
-	
+
 	onload: (frm) => {
 		frm.trigger("set_query");
 	},
-	
+
 	set_query: (frm) => {
 		frm.set_query("trip_assignment", () => {
 			return {
 				filters: {
-					settled: 0
-				}
+					settled: 0,
+				},
 			};
 		});
-	}
+	},
 });
