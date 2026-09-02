@@ -2,46 +2,35 @@
 # See license.txt
 
 import frappe
-from frappe.tests import IntegrationTestCase, UnitTestCase
-
-
-class UnitTestTrailer(UnitTestCase):
-	"""
-	Unit tests for Trailer.
-	Use this class for testing individual functions and methods.
-	"""
-
-	pass
+from frappe.tests import IntegrationTestCase
 
 
 class IntegrationTestTrailer(IntegrationTestCase):
-	"""
-	Integration tests for Trailer.
-	Use this class for testing interactions with the database.
-	"""
-
-	def setUp(self):
-		"""Set up test data before each test."""
-		pass
-
-	def tearDown(self):
-		"""Clean up test data after each test."""
-		pass
+	"""Integration tests for Trailer."""
 
 	def test_trailer_creation(self):
-		"""Test creating a new Trailer."""
-		# Create test document
-		doc = frappe.get_doc(
-			{
-				"doctype": "Trailer",
-				# Add required fields here
-			}
-		)
+		doc = frappe.get_doc({"doctype": "Trailer", "license_plate": "TR 123 ABC", "make": "Doepker"})
 		doc.insert()
 
-		# Assertions
 		self.assertEqual(doc.doctype, "Trailer")
-		self.assertIsNotNone(doc.name)
+		self.assertEqual(doc.name, "TR 123 ABC")
 
-		# Clean up
-		doc.delete()
+	def test_missing_required_fields_raises(self):
+		doc = frappe.get_doc({"doctype": "Trailer", "license_plate": "TR 789 QRS"})
+
+		self.assertRaises(frappe.MandatoryError, doc.insert)
+
+	def test_duplicate_license_plate_not_allowed(self):
+		frappe.get_doc({"doctype": "Trailer", "license_plate": "TR 999 DUP", "make": "Fruehauf"}).insert()
+
+		duplicate = frappe.get_doc({"doctype": "Trailer", "license_plate": "TR 999 DUP", "make": "Fruehauf"})
+		self.assertRaises(frappe.DuplicateEntryError, duplicate.insert)
+
+	def test_after_insert_creates_vehicle(self):
+		doc = frappe.get_doc({"doctype": "Trailer", "license_plate": "TR 111 VEH", "make": "Doepker"})
+		doc.insert()
+
+		self.assertTrue(frappe.db.exists("Vehicle", "TR 111 VEH"))
+		vehicle = frappe.get_doc("Vehicle", "TR 111 VEH")
+		self.assertEqual(vehicle.is_trailer, 1)
+		self.assertEqual(vehicle.is_truck, 0)
