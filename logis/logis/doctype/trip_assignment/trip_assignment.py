@@ -34,7 +34,7 @@ class TripAssignment(Document):
 		total = 0
 		if self.expenses:
 			for expense in self.expenses:
-				total += expense.amount
+				total += expense.amount or 0
 
 		self.total_expense = total
 
