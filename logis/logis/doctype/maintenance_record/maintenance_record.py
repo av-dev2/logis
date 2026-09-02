@@ -89,7 +89,7 @@ class MaintenanceRecord(Document):
 				new_spare.qty_requested = d.qty_requested
 				new_spare.qty_provided = d.qty_provided
 				new_spare.qty_used = 0
-				new_spare.remained_qty = d.remained_qty
+				new_spare.remained_qty = d.qty_provided
 
 	@frappe.whitelist()
 	def create_material_transfer(self):
