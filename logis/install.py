@@ -78,9 +78,22 @@ def create_inventory_dimensions():
 
 def create_accounting_dimensions():
 	"""
-	Create Accounting Dimension records for Truck, Trailer, and Truck Entry.
-	Note: This function does not update child tables of Accounting Dimension.
+	Create Accounting Dimension records for Truck, Trailer, and Truck Entry, and
+	make sure the matching custom fields (e.g. on Budget) exist immediately.
+
+	Accounting Dimension.on_update() only runs make_dimension_in_accounting_doctypes()
+	synchronously under frappe.in_test; otherwise it enqueues it on a background
+	worker that may never run during site setup. Without those fields, ERPNext's
+	BudgetValidation selects every dimension column from `tabBudget` on every
+	GL-posting submission and fails with "Unknown column '<dimension>' in
+	'SELECT'". Calling it here directly, and on every run (not only on first
+	creation), keeps the fields in sync even if a prior install ran before a
+	worker processed the queued job.
 	"""
+	from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
+		make_dimension_in_accounting_doctypes,
+	)
+
 	dimensions = [
 		{
 			"document_type": "Truck",
@@ -99,22 +112,27 @@ def create_accounting_dimensions():
 	for dimension_data in dimensions:
 		document_type = dimension_data["document_type"]
 
-		# Check if Accounting Dimension already exists for this document type
-		if not frappe.db.exists("Accounting Dimension", {"document_type": document_type}):
-			try:
+		try:
+			existing_name = frappe.db.exists("Accounting Dimension", {"document_type": document_type})
+
+			if existing_name:
+				accounting_dimension = frappe.get_doc("Accounting Dimension", existing_name)
+			else:
 				accounting_dimension = frappe.new_doc("Accounting Dimension")
 				accounting_dimension.document_type = document_type
 				accounting_dimension.label = dimension_data["label"]
 				accounting_dimension.disabled = 0
 				accounting_dimension.save(ignore_permissions=True)
 				frappe.db.commit()
-			except Exception as e:
-				frappe.logger().error(f"Error creating Accounting Dimension for '{document_type}': {e!s}")
-				frappe.log_error(
-					title=f"Error creating Accounting Dimension for '{document_type}'",
-					message=frappe.get_traceback(),
-				)
-				frappe.db.rollback()
+
+			make_dimension_in_accounting_doctypes(doc=accounting_dimension)
+		except Exception as e:
+			frappe.logger().error(f"Error creating Accounting Dimension for '{document_type}': {e!s}")
+			frappe.log_error(
+				title=f"Error creating Accounting Dimension for '{document_type}'",
+				message=frappe.get_traceback(),
+			)
+			frappe.db.rollback()
 
 
 def create_maintenance_fault_types():
