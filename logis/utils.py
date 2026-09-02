@@ -110,9 +110,8 @@ def create_expense_journal_entry(source_doc):
 	# Get company defaults
 	company = source_doc.company or frappe.defaults.get_global_default("company")
 	
-	# Fetch default currency and default cash account from company
+	# Fetch default cash account from company
 	company_doc = frappe.get_cached_doc("Company", company)
-	default_currency = company_doc.default_currency
 	default_cash_account = company_doc.default_cash_account
 	
 	if not default_cash_account:
