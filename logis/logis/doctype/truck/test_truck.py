@@ -2,46 +2,43 @@
 # See license.txt
 
 import frappe
-from frappe.tests import IntegrationTestCase, UnitTestCase
-
-
-class UnitTestTruck(UnitTestCase):
-	"""
-	Unit tests for Truck.
-	Use this class for testing individual functions and methods.
-	"""
-
-	pass
+from frappe.tests import IntegrationTestCase
 
 
 class IntegrationTestTruck(IntegrationTestCase):
-	"""
-	Integration tests for Truck.
-	Use this class for testing interactions with the database.
-	"""
-
-	def setUp(self):
-		"""Set up test data before each test."""
-		pass
-
-	def tearDown(self):
-		"""Clean up test data after each test."""
-		pass
+	"""Integration tests for Truck."""
 
 	def test_truck_creation(self):
-		"""Test creating a new Truck."""
-		# Create test document
+		doc = frappe.get_doc({"doctype": "Truck", "license_plate": "T 123 ABC", "make": "Scania"})
+		doc.insert()
+
+		self.assertEqual(doc.doctype, "Truck")
+		self.assertEqual(doc.name, "T 123 ABC")
+
+	def test_license_plate_is_the_name(self):
+		doc = frappe.get_doc({"doctype": "Truck", "license_plate": "T 456 XYZ", "make": "Volvo"})
+		doc.insert()
+
+		self.assertEqual(doc.name, doc.license_plate)
+
+	def test_missing_required_fields_raises(self):
+		doc = frappe.get_doc({"doctype": "Truck", "license_plate": "T 789 QRS"})
+
+		self.assertRaises(frappe.MandatoryError, doc.insert)
+
+	def test_duplicate_license_plate_not_allowed(self):
+		frappe.get_doc({"doctype": "Truck", "license_plate": "T 999 DUP", "make": "Isuzu"}).insert()
+
+		duplicate = frappe.get_doc({"doctype": "Truck", "license_plate": "T 999 DUP", "make": "Isuzu"})
+		self.assertRaises(frappe.DuplicateEntryError, duplicate.insert)
+
+	def test_after_insert_creates_vehicle(self):
 		doc = frappe.get_doc(
-			{
-				"doctype": "Truck",
-				# Add required fields here
-			}
+			{"doctype": "Truck", "license_plate": "T 111 VEH", "make": "Man", "model": "TGS"}
 		)
 		doc.insert()
 
-		# Assertions
-		self.assertEqual(doc.doctype, "Truck")
-		self.assertIsNotNone(doc.name)
-
-		# Clean up
-		doc.delete()
+		self.assertTrue(frappe.db.exists("Vehicle", "T 111 VEH"))
+		vehicle = frappe.get_doc("Vehicle", "T 111 VEH")
+		self.assertEqual(vehicle.is_truck, 1)
+		self.assertEqual(vehicle.is_trailer, 0)
